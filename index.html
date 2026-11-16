@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>CareerPath — Eksplorasi Potensi Diri & Pilihan Jurusan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --ink: #0f172a;
+      --ink-2: #334155;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --line-soft: #eef2f6;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-soft: #eef2ff;
+      --accent: #06b6d4;
+      --emerald: #10b981;
+      --emerald-soft: #ecfdf5;
+      --rose: #e11d48;
+      --rose-soft: #fff1f2;
+      --amber: #d97706;
+      --amber-soft: #fffbeb;
+      --shadow-xs: 0 1px 2px rgba(15, 23, 42, .04);
+      --shadow-sm: 0 4px 16px rgba(15, 23, 42, .05);
+      --shadow-lg: 0 20px 50px rgba(15, 23, 42, .08);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 500px at 85% -10%, rgba(79, 70, 229, .08), transparent 60%),
+        radial-gradient(700px 400px at 10% 0%, rgba(6, 182, 212, .07), transparent 55%),
+        var(--bg);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .container { width: min(1160px, calc(100% - 40px)); margin: auto; }
+    :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+    /* Navbar */
+    .navbar {
+      height: 72px;
+      background: rgba(255, 255, 255, .86);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226, 232, 240, .85);
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand {
+      display: flex; align-items: center; gap: 11px;
+      font-size: 1.15rem; font-weight: 800; color: var(--ink); letter-spacing: -.4px;
+    }
+    .brand-mark {
+      width: 36px; height: 36px; border-radius: 11px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      display: grid; place-items: center; color: #fff;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, .28);
+    }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-link {
+      border: 0; background: transparent; color: var(--muted);
+      font-size: .85rem; font-weight: 600; padding: 8px 12px; border-radius: 10px;
+      transition: .16s;
+    }
+    .nav-link:hover { color: var(--ink); background: var(--surface-soft); }
+
+    /* Buttons */
+    .btn {
+      border: 0; border-radius: 12px; padding: 11px 18px;
+      font-size: .92rem; font-weight: 700;
+      transition: all .18s cubic-bezier(.2, .8, .2, 1);
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn:active:not(:disabled) { transform: scale(.98); }
+    .btn-primary {
+      background: linear-gradient(180deg, #564ef2 0%, #4338ca 100%);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, .26), inset 0 1px 0 rgba(255, 255, 255, .2);
+    }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(79, 70, 229, .34); }
+    .btn-outline { background: #fff; color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow-xs); }
+    .btn-outline:hover:not(:disabled) { background: var(--surface-soft); border-color: #cbd5e1; }
+    .btn-ghost { background: transparent; color: var(--muted); padding: 8px 12px; }
+    .btn-ghost:hover { background: var(--surface-soft); color: var(--ink); }
+    .btn-sm { padding: 7px 12px; font-size: .78rem; border-radius: 9px; }
+    .btn-lg { padding: 14px 24px; font-size: .96rem; border-radius: 14px; }
+    .btn:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; }
+
+    .view { animation: fadeUp .32s cubic-bezier(.2, .8, .2, 1) both; min-height: calc(100vh - 72px); }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #fff; border: 1px solid var(--line); color: var(--primary);
+      border-radius: 99px; padding: 5px 12px; font-size: .74rem; font-weight: 800;
+      letter-spacing: .3px; box-shadow: var(--shadow-xs);
+    }
+
+    /* Hero */
+    .hero { padding: 52px 0 60px; }
+    .hero-grid { display: grid; grid-template-columns: 1.04fr .96fr; align-items: center; gap: 44px; }
+    .hero h1 {
+      font-size: clamp(2.15rem, 4.2vw, 3.45rem); line-height: 1.1;
+      letter-spacing: -1.7px; color: var(--ink); margin: 16px 0; font-weight: 800;
+    }
+    .hero h1 .grad {
+      background: linear-gradient(120deg, #4f46e5, #06b6d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-copy { font-size: 1rem; color: var(--muted); max-width: 540px; margin: 0 0 24px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 28px; max-width: 520px; }
+    .stat-mini { background: rgba(255, 255, 255, .82); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+    .stat-mini strong { display: block; font-size: 1.02rem; color: var(--ink); font-weight: 800; }
+    .stat-mini span { font-size: .76rem; color: var(--muted); }
+
+    /* Preview Dashboard */
+    .preview-shell {
+      background: rgba(255, 255, 255, .9); border: 1px solid rgba(226, 232, 240, .95);
+      border-radius: 26px; padding: 18px;
+      box-shadow: var(--shadow-lg), 0 0 0 6px rgba(255, 255, 255, .45);
+    }
+    .preview-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--line-soft);
+    }
+    .preview-user { display: flex; align-items: center; gap: 10px; }
+    .avatar-sm {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, #e0e7ff, #cffafe);
+      color: var(--primary); font-weight: 800; font-size: .85rem; display: grid; place-items: center;
+    }
+    .preview-user strong { display: block; font-size: .85rem; line-height: 1.2; }
+    .preview-user small { color: var(--muted); font-size: .74rem; }
+    .code-badge {
+      padding: 4px 10px; border-radius: 8px; background: var(--primary-soft);
+      color: var(--primary); font-size: .74rem; font-weight: 800; letter-spacing: .7px;
+    }
+    .preview-bento { display: grid; grid-template-columns: 1fr 1.15fr; gap: 12px; }
+    .p-card { background: var(--surface-soft); border: 1px solid var(--line-soft); border-radius: 16px; padding: 14px; }
+    .p-card-label {
+      font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .5px; margin-bottom: 8px; display: flex; justify-content: space-between;
+    }
+    .gauge-mini { display: flex; flex-direction: column; align-items: center; padding: 4px 0; }
+    .gauge-val { font-size: 1.6rem; font-weight: 800; color: var(--ink); letter-spacing: -1px; margin-top: -12px; }
+    .gauge-sub { font-size: .72rem; color: #047857; font-weight: 700; background: var(--emerald-soft); padding: 2px 8px; border-radius: 99px; margin-top: 4px; }
+    .mini-bars { display: grid; gap: 9px; margin-top: 4px; }
+    .m-bar-head { display: flex; justify-content: space-between; font-size: .76rem; font-weight: 700; margin-bottom: 4px; }
+    .m-bar-track { height: 6px; border-radius: 99px; background: #e2e8f0; overflow: hidden; }
+    .m-bar-fill { height: 100%; border-radius: 99px; }
+    .preview-matches {
+      margin-top: 12px; background: #fff; border: 1px solid var(--line);
+      border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .preview-matches strong { font-size: .83rem; display: block; }
+    .preview-matches small { font-size: .74rem; color: var(--muted); }
+    .fit-chip { background: var(--emerald-soft); color: #047857; font-size: .74rem; font-weight: 800; padding: 5px 10px; border-radius: 99px; white-space: nowrap; }
+
+    /* Sections */
+    .section { padding: 62px 0; }
+    .section-soft { background: rgba(255, 255, 255, .52); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
+    .section-heading { text-align: center; max-width: 670px; margin: 0 auto 36px; }
+    .section-heading h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: -.8px; color: var(--ink); margin: 12px 0 8px; font-weight: 800; }
+    .section-heading p { color: var(--muted); margin: 0; font-size: .95rem; }
+
+    /* NEW: Problem & Research Data Bento */
+    .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 18px; }
+    .kpi-card {
+      background: #fff; border: 1px solid var(--line); border-radius: 22px;
+      padding: 26px; box-shadow: var(--shadow-sm); display: flex; gap: 20px; align-items: flex-start;
+    }
+    .kpi-badge-num {
+      flex: none; min-width: 104px; padding: 16px 14px; border-radius: 18px; text-align: center;
+      font-size: 1.9rem; font-weight: 800; letter-spacing: -1px; line-height: 1;
+    }
+    .kpi-badge-num.amber { background: var(--amber-soft); color: var(--amber); border: 1px solid #fde68a; }
+    .kpi-badge-num.rose { background: var(--rose-soft); color: var(--rose); border: 1px solid #fecdd3; }
+    .kpi-card h3 { margin: 0 0 6px; font-size: 1.05rem; font-weight: 800; }
+    .kpi-card p { margin: 0 0 10px; font-size: .89rem; color: var(--muted); }
+    .kpi-source {
+      display: inline-flex; align-items: center; gap: 6px; font-size: .74rem; font-weight: 700;
+      color: var(--ink-2); background: var(--surface-soft); border: 1px solid var(--line);
+      padding: 4px 10px; border-radius: 99px;
+    }
+
+    .compare-problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .insight-box {
+      background: #fff; border: 1px solid var(--line); border-radius: 22px;
+      padding: 24px; box-shadow: var(--shadow-sm);
+    }
+    .insight-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .insight-head h3 { margin: 0; font-size: 1.05rem; font-weight: 800; }
+    .pill-tag { font-size: .72rem; font-weight: 800; padding: 4px 10px; border-radius: 99px; }
+    .pill-tag.warn { background: var(--rose-soft); color: var(--rose); }
+    .pill-tag.good { background: var(--emerald-soft); color: #047857; }
+    .insight-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .insight-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: var(--surface-soft); border: 1px solid var(--line-soft);
+      border-radius: 12px; padding: 11px 13px; font-size: .87rem; color: var(--ink-2);
+    }
+    .insight-list li strong { color: var(--ink); }
+
+    /* NEW: Audience & Moments (Who, When, Where) */
+    .audience-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 18px; }
+    .audience-card {
+      background: #fff; border: 1px solid var(--line); border-radius: 20px;
+      padding: 20px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 10px;
+    }
+    .audience-icon {
+      width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
+      font-size: 1.25rem; background: var(--primary-soft); color: var(--primary);
+    }
+    .audience-card .phase { font-size: .72rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: .5px; }
+    .audience-card h3 { margin: 0; font-size: .98rem; font-weight: 800; }
+    .audience-card p { margin: 0; font-size: .84rem; color: var(--muted); }
+
+    .moments-bar {
+      background: #fff; border: 1px solid var(--line); border-radius: 20px;
+      padding: 20px 24px; box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .moments-title strong { display: block; font-size: .95rem; }
+    .moments-title span { font-size: .83rem; color: var(--muted); }
+    .moments-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .moment-chip {
+      background: var(--surface-soft); border: 1px solid var(--line); border-radius: 99px;
+      padding: 7px 13px; font-size: .8rem; font-weight: 700; color: var(--ink-2);
+    }
+
+    /* Steps & RIASEC */
+    .bento-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .step-card, .type-card, .panel {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
+      padding: 24px; box-shadow: var(--shadow-sm);
+    }
+    .step-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .step-icon { width: 44px; height: 44px; border-radius: 13px; background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; font-size: 1.2rem; }
+    .step-num { font-size: .74rem; font-weight: 800; color: var(--muted); background: var(--surface-soft); border: 1px solid var(--line); padding: 4px 10px; border-radius: 99px; }
+    .step-card h3 { margin: 0 0 6px; font-size: 1.04rem; font-weight: 800; }
+    .step-card p { margin: 0; color: var(--muted); font-size: .89rem; }
+
+    .types-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .type-card {
+      cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 14px;
+    }
+    .type-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: #c7d2fe; }
+    .type-id-wrap { display: flex; align-items: center; gap: 12px; }
+    .type-icon { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; font-size: 1.35rem; flex: none; }
+    .type-card h3 { margin: 0; font-size: 1.02rem; font-weight: 800; }
+    .type-code { font-size: .72rem; color: var(--muted); font-weight: 700; letter-spacing: .5px; }
+    .type-card p { margin: 0; color: var(--muted); font-size: .87rem; }
+    .type-more { font-size: .78rem; font-weight: 700; color: var(--primary); }
+
+    /* NEW: Major Explorer & Comparison Table */
+    .explorer-box {
+      background: #fff; border: 1px solid var(--line); border-radius: 24px;
+      padding: clamp(20px, 3vw, 28px); box-shadow: var(--shadow-sm);
+    }
+    .explorer-controls {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line-soft);
+    }
+    .compare-select-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+    .select-card {
+      background: var(--surface-soft); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px;
+    }
+    .select-card label { display: block; font-size: .76rem; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+    .select-card select {
+      width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+      background: #fff; color: var(--ink); font-weight: 700; font-size: .9rem;
+    }
+    .compare-table-wrap { overflow-x: auto; }
+    .compare-table {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+      font-size: .86rem;
+    }
+    .compare-table th, .compare-table td {
+      padding: 13px 15px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top;
+    }
+    .compare-table th {
+      background: var(--surface-soft); font-weight: 800; color: var(--ink); width: 22%;
+    }
+    .compare-table thead th {
+      background: #f1f5f9; font-size: .92rem; border-bottom: 1px solid var(--line);
+    }
+    .compare-table tr:last-child th, .compare-table tr:last-child td { border-bottom: 0; }
+
+    .footer { padding: 26px 0; color: var(--muted); text-align: center; font-size: .84rem; border-top: 1px solid var(--line); background: #fff; }
+
+    /* Pre-test Form */
+    .form-wrap { padding: 44px 0 72px; display: grid; place-items: start center; }
+    .form-panel {
+      width: min(640px, 100%); background: #fff; border: 1px solid var(--line);
+      border-radius: 26px; padding: clamp(24px, 5vw, 40px); box-shadow: var(--shadow-lg);
+    }
+    .stepper { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .step-pill { font-size: .74rem; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); }
+    .step-pill.idle { background: var(--surface-soft); color: var(--muted); }
+    .form-panel h2 { font-size: 1.7rem; letter-spacing: -.7px; margin: 0 0 6px; font-weight: 800; }
+    .form-panel > p { color: var(--muted); margin: 0 0 24px; font-size: .92rem; }
+    .field { margin: 0 0 20px; }
+    .field label { display: block; font-weight: 700; font-size: .88rem; color: var(--ink); margin-bottom: 8px; }
+    .field input[type="text"] {
+      width: 100%; padding: 13px 15px; border: 1.5px solid var(--line); border-radius: 12px;
+      background: var(--surface-soft); color: var(--ink); transition: .18s; font-weight: 600;
+    }
+    .field input[type="text"]:focus { outline: none; background: #fff; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, .1); }
+    .pill-select-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .pill-select-group.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .choice-chip {
+      border: 1.5px solid var(--line); background: var(--surface-soft); color: var(--ink-2);
+      border-radius: 12px; padding: 11px 10px; font-size: .84rem; font-weight: 700; text-align: center; transition: .16s;
+    }
+    .choice-chip:hover { border-color: #c7d2fe; background: #fff; }
+    .choice-chip.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, .08); }
+    .inline-error {
+      margin-top: 8px; font-size: .82rem; font-weight: 600; color: #dc2626;
+      background: #fef2f2; border: 1px solid #fecaca; padding: 9px 12px; border-radius: 10px;
+    }
+
+    /* Quiz View */
+    .quiz-wrap { padding: 36px 0 70px; }
+    .quiz-shell { width: min(760px, 100%); margin: auto; }
+    .quiz-header-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px 20px; margin-bottom: 18px; box-shadow: var(--shadow-xs); }
+    .quiz-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: .84rem; font-weight: 700; color: var(--muted); }
+    .progress-track { height: 8px; background: #eef2f6; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 99px; transition: width .32s cubic-bezier(.2, .8, .2, 1); }
+    .question-card { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: clamp(24px, 5vw, 40px); box-shadow: var(--shadow-lg); }
+    .question-tag { display: inline-flex; align-items: center; gap: 7px; border-radius: 99px; padding: 5px 12px; background: var(--surface-soft); border: 1px solid var(--line); color: var(--ink-2); font-size: .75rem; font-weight: 800; margin-bottom: 16px; }
+    .tag-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .question-card h2 { font-size: clamp(1.3rem, 2.7vw, 1.75rem); line-height: 1.38; letter-spacing: -.4px; color: var(--ink); margin: 0 0 8px; font-weight: 800; }
+    .question-card .sub { color: var(--muted); margin: 0 0 24px; font-size: .92rem; }
+    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .option {
+      border: 1.5px solid var(--line); background: var(--surface-soft); border-radius: 14px;
+      padding: 15px 16px; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      color: var(--ink); font-weight: 700; font-size: .92rem; transition: all .16s ease;
+    }
+    .option-left { display: flex; align-items: center; gap: 12px; }
+    .option:hover { border-color: #a5b4fc; background: #fff; }
+    .option.selected { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, .1); }
+    .option .radio { width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 50%; flex: none; display: grid; place-items: center; background: #fff; }
+    .option.selected .radio { border-color: var(--primary); }
+    .option.selected .radio:after { content: ""; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; }
+    .kbd-hint { font-size: .72rem; font-weight: 700; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
+    .option.selected .kbd-hint { border-color: #c7d2fe; color: var(--primary); }
+    .quiz-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
+    .quiz-nav .btn { min-width: 145px; }
+    .notice { color: var(--muted); font-size: .82rem; text-align: center; margin-top: 16px; }
+
+    /* RESULT DASHBOARD */
+    .result-wrap { padding: 32px 0 72px; }
+    .dash-topbar {
+      background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+      margin-bottom: 18px; box-shadow: var(--shadow-sm);
+    }
+    .dash-profile { display: flex; align-items: center; gap: 14px; }
+    .avatar-lg {
+      width: 52px; height: 52px; border-radius: 16px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4); color: #fff; font-size: 1.25rem; font-weight: 800;
+      display: grid; place-items: center; flex: none; box-shadow: 0 8px 20px rgba(79, 70, 229, .22);
+    }
+    .dash-profile h2 { margin: 0 0 5px; font-size: 1.3rem; font-weight: 800; letter-spacing: -.4px; }
+    .profile-meta-pills { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+    .meta-chip {
+      display: inline-flex; align-items: center; gap: 5px; font-size: .75rem; font-weight: 700;
+      padding: 4px 10px; border-radius: 99px; background: var(--surface-soft); border: 1px solid var(--line); color: var(--ink-2);
+    }
+    .meta-chip.highlight { background: var(--primary-soft); border-color: #c7d2fe; color: var(--primary); }
+    .dash-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .bento-main { display: grid; grid-template-columns: .95fr 1.05fr 1.2fr; gap: 18px; margin-bottom: 18px; }
+    .bento-card { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 22px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+    .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
+    .card-title { font-size: .95rem; font-weight: 800; color: var(--ink); margin: 0; }
+    .card-badge { font-size: .72rem; font-weight: 700; color: var(--muted); background: var(--surface-soft); border: 1px solid var(--line); padding: 3px 9px; border-radius: 99px; }
+
+    .gauge-box { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1; padding: 6px 0; }
+    .gauge-svg-wrap { position: relative; width: 210px; height: 122px; }
+    .gauge-center-text { position: absolute; inset: auto 0 6px 0; text-align: center; }
+    .gauge-number { font-size: 2.35rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1; color: var(--ink); }
+    .gauge-caption { font-size: .75rem; color: var(--muted); font-weight: 600; margin-top: 3px; }
+    .clarity-pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 5px 12px; border-radius: 99px; font-size: .78rem; font-weight: 700; background: var(--emerald-soft); color: #047857; }
+    .holland-strip { margin-top: 16px; width: 100%; background: var(--surface-soft); border: 1px solid var(--line-soft); border-radius: 14px; padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; }
+    .holland-strip span { font-size: .78rem; color: var(--muted); font-weight: 600; }
+    .holland-strip strong { font-size: .95rem; letter-spacing: 1.5px; color: var(--primary); font-weight: 800; }
+
+    .radar-wrap { display: grid; place-items: center; flex: 1; }
+    .radar-svg { width: 100%; max-width: 280px; height: auto; overflow: visible; }
+
+    .score-list { display: grid; gap: 13px; flex: 1; align-content: center; }
+    .score-label { display: flex; justify-content: space-between; align-items: center; font-size: .84rem; font-weight: 700; margin-bottom: 5px; }
+    .score-name { display: flex; align-items: center; gap: 7px; color: var(--ink); }
+    .score-val { color: var(--muted); font-size: .8rem; }
+    .score-track { height: 8px; background: #eef2f6; border-radius: 99px; overflow: hidden; }
+    .score-fill { height: 100%; border-radius: 99px; transition: width .65s cubic-bezier(.2, .8, .2, 1); }
+
+    .top-types-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+    .archetype-card { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 22px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+    .archetype-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+    .archetype-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .archetype-title { display: flex; align-items: center; gap: 12px; }
+    .archetype-title h4 { margin: 0; font-size: 1.06rem; font-weight: 800; }
+    .archetype-title span { font-size: .8rem; color: var(--muted); font-weight: 600; }
+    .rank-pill { font-size: .74rem; font-weight: 800; padding: 4px 10px; border-radius: 99px; background: var(--surface-soft); border: 1px solid var(--line); }
+    .archetype-desc { margin: 0 0 12px; font-size: .88rem; color: var(--ink-2); }
+    .sw-grid { display: grid; gap: 8px; }
+    .strength-box { background: var(--surface-soft); border: 1px solid var(--line-soft); border-radius: 12px; padding: 10px 13px; font-size: .82rem; color: var(--ink-2); }
+    .strength-box strong { color: var(--ink); }
+
+    /* Recommendations & Comparison in Result */
+    .recommend-panel { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: clamp(20px, 3vw, 28px); box-shadow: var(--shadow-sm); margin-bottom: 18px; }
+    .recommend-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
+    .recommend-header h3 { margin: 0 0 4px; font-size: 1.14rem; font-weight: 800; }
+    .recommend-note { color: var(--muted); font-size: .86rem; margin: 0; max-width: 640px; }
+    .segmented-tabs { display: inline-flex; background: var(--surface-soft); border: 1px solid var(--line); padding: 4px; border-radius: 12px; gap: 4px; }
+    .tab-btn { border: 0; background: transparent; color: var(--muted); padding: 8px 16px; border-radius: 9px; font-size: .86rem; font-weight: 700; transition: .16s; }
+    .tab-btn.active { background: #fff; color: var(--ink); box-shadow: 0 2px 6px rgba(15, 23, 42, .08); }
+    .filter-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-bottom: 16px; margin-bottom: 18px; border-bottom: 1px solid var(--line-soft); }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filter-chip { border: 1px solid var(--line); background: #fff; color: var(--muted); padding: 6px 12px; border-radius: 99px; font-size: .78rem; font-weight: 700; transition: .15s; }
+    .filter-chip:hover { border-color: #cbd5e1; color: var(--ink); }
+    .filter-chip.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+    .recommend-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .recommend-card {
+      border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; background: #fff;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
+    }
+    .recommend-card.compared { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79, 70, 229, .14); }
+    .recommend-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .rec-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .mini-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .5px; font-weight: 800; padding: 3px 9px; border-radius: 99px; }
+    .fit-score-pill { font-size: .74rem; font-weight: 800; color: #047857; background: var(--emerald-soft); padding: 3px 9px; border-radius: 99px; }
+    .recommend-card h4 { margin: 0 0 6px; font-size: 1.02rem; font-weight: 800; color: var(--ink); }
+    .recommend-card p { font-size: .86rem; color: var(--muted); margin: 0; }
+    .rec-footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft); flex-wrap: wrap; }
+    .detail-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .d-tag { font-size: .74rem; font-weight: 600; color: var(--ink-2); background: var(--surface-soft); border: 1px solid var(--line-soft); padding: 4px 9px; border-radius: 8px; }
+    .compare-toggle {
+      border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink-2);
+      border-radius: 9px; padding: 6px 11px; font-size: .75rem; font-weight: 700; white-space: nowrap;
+    }
+    .compare-toggle.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    /* Result Bottom: Comparison + Decision Readiness */
+    .result-compare-box {
+      background: #fff; border: 1px solid var(--line); border-radius: 22px;
+      padding: 22px; box-shadow: var(--shadow-sm); margin-bottom: 18px;
+    }
+    .guidance-panel {
+      background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+      border: 1px solid var(--line); border-radius: 22px; padding: 24px; box-shadow: var(--shadow-sm);
+    }
+    .checklist-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+    .check-item {
+      background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px;
+      display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: .84rem;
+    }
+    .check-item input { margin-top: 3px; accent-color: var(--primary); width: 16px; height: 16px; flex: none; }
+
+    .disclaimer { font-size: .8rem; color: var(--muted); text-align: center; margin: 22px auto 0; max-width: 820px; }
+
+    /* Modal */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, .45); backdrop-filter: blur(6px); display: grid; place-items: center; padding: 20px; z-index: 50; }
+    .modal-card { width: min(520px, 100%); background: #fff; border-radius: 24px; padding: 28px; box-shadow: 0 25px 60px rgba(15, 23, 42, .22); border: 1px solid var(--line); position: relative; }
+    .modal-close { position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); font-weight: 700; display: grid; place-items: center; }
+
+    /* Responsive */
+    @media (max-width: 1000px) {
+      .bento-main { grid-template-columns: 1fr 1fr; }
+      .bento-main > :last-child { grid-column: span 2; }
+      .audience-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+      .hero-grid, .data-grid, .compare-problem-grid, .bento-steps, .types-grid, .top-types-grid, .compare-select-grid, .checklist-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .container { width: min(100% - 28px, 1160px); }
+      .bento-main, .preview-bento, .audience-grid, .options, .recommend-grid { grid-template-columns: 1fr; }
+      .bento-main > :last-child { grid-column: auto; }
+      .hero-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .pill-select-group { grid-template-columns: repeat(2, 1fr); }
+      .pill-select-group.cols-2 { grid-template-columns: 1fr; }
+      .quiz-nav .btn { min-width: 0; flex: 1; }
+      .dash-actions { width: 100%; }
+      .dash-actions .btn { flex: 1; }
+      .kpi-card { flex-direction: column; gap: 14px; }
+    }
+
+    @media print {
+      @page { size: A4; margin: 12mm; }
+      body { background: #fff !important; font-size: 9.5pt; }
+      .navbar, .no-print, .footer, .dash-actions, .filter-row, .segmented-tabs, .compare-toggle { display: none !important; }
+      .view { display: none !important; }
+      #resultView { display: block !important; min-height: 0; }
+      .container { width: 100%; max-width: none; }
+      .result-wrap { padding: 0; }
+      .bento-main { grid-template-columns: 1fr 1fr 1.2fr; gap: 10px; }
+      .bento-main > :last-child { grid-column: auto; }
+      .top-types-grid, .recommend-grid, .checklist-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .bento-card, .archetype-card, .recommend-card, .dash-topbar, .guidance-panel {
+        box-shadow: none; break-inside: avoid;
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container nav-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </span>
+        CareerPath
+      </div>
+
+      <nav class="nav-links" id="landingNav" aria-label="Navigasi halaman utama">
+        <button type="button" class="nav-link" data-scroll="whySection">Mengapa Penting</button>
+        <button type="button" class="nav-link" data-scroll="whoSection">Untuk Siapa</button>
+        <button type="button" class="nav-link" data-scroll="riasecSection">6 Tipe Minat</button>
+        <button type="button" class="nav-link" data-scroll="compareSection">Bandingkan Jurusan</button>
+      </nav>
+
+      <button class="btn btn-primary" id="navStart">Mulai Tes →</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. LANDING VIEW -->
+    <section id="landingView" class="view">
+      <div class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow">✦ PLATFORM PENGENALAN POTENSI & EKSPLORASI JURUSAN</span>
+            <h1>Pilih jurusan kuliah dengan <span class="grad">pertimbangan matang.</span></h1>
+            <p class="hero-copy">Bukan sekadar tes minat bakat. CareerPath membantu siswa SMA, SMK, MA sederajat, hingga lulusan baru memahami potensi diri, mengeksplorasi pilihan pendidikan, dan membandingkan jurusan sebelum mengambil keputusan.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary btn-lg" id="heroStart">Mulai Kenali Dirimu →</button>
+              <button class="btn btn-outline btn-lg" id="heroCompareBtn">Bandingkan Jurusan</button>
+            </div>
+            <div class="hero-stats">
+              <div class="stat-mini"><strong>SMA/SMK/MA</strong><span>& Lulusan baru</span></div>
+              <div class="stat-mini"><strong>Online</strong><span>HP & Komputer</span></div>
+              <div class="stat-mini"><strong>5–7 mnt</strong><span>Laporan instan</span></div>
+            </div>
+          </div>
+
+          <!-- Preview Card -->
+          <div class="preview-shell" aria-label="Pratinjau dasbor CareerPath">
+            <div class="preview-topbar">
+              <div class="preview-user">
+                <div class="avatar-sm">DN</div>
+                <div><strong>Contoh Profil · Dinda</strong><small>SMA · Kelas 12 · Persiapan Kuliah</small></div>
+              </div>
+              <span class="code-badge">KODE: I · A · S</span>
+            </div>
+
+            <div class="preview-bento">
+              <div class="p-card">
+                <div class="p-card-label">Kecocokan Utama <span>Top Fit</span></div>
+                <div class="gauge-mini">
+                  <svg width="150" height="86" viewBox="0 0 180 104" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="prevGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#06b6d4"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M 20 90 A 70 70 0 0 1 160 90" fill="none" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round"/>
+                    <path d="M 20 90 A 70 70 0 0 1 148 54" fill="none" stroke="url(#prevGrad)" stroke-width="14" stroke-linecap="round"/>
+                  </svg>
+                  <div class="gauge-val tabular">92%</div>
+                  <div class="gauge-sub">Arah Minat Tinggi</div>
+                </div>
+              </div>
+
+              <div class="p-card">
+                <div class="p-card-label">3 Potensi Terkuat <span>Skor</span></div>
+                <div class="mini-bars">
+                  <div>
+                    <div class="m-bar-head"><span>🔬 Investigative</span><span class="tabular">11/12</span></div>
+                    <div class="m-bar-track"><div class="m-bar-fill" style="width:92%;background:#4f46e5"></div></div>
+                  </div>
+                  <div>
+                    <div class="m-bar-head"><span>🎨 Artistic</span><span class="tabular">10/12</span></div>
+                    <div class="m-bar-track"><div class="m-bar-fill" style="width:83%;background:#9333ea"></div></div>
+                  </div>
+                  <div>
+                    <div class="m-bar-head"><span>🤝 Social</span><span class="tabular">9/12</span></div>
+                    <div class="m-bar-track"><div class="m-bar-fill" style="width:75%;background:#10b981"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="preview-matches">
+              <div>
+                <strong>Siap Bandingkan: Informatika vs DKV</strong>
+                <small>Dilengkapi kelebihan, tantangan, & bekal diskusi BK/Orang Tua</small>
+              </div>
+              <span class="fit-chip">92% Match</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART 1: MASALAH & DATA PENDUKUNG (WHAT & WHY) -->
+      <section class="section section-soft" id="whySection">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">LATAR BELAKANG & DATA FAKTA</span>
+            <h2>Mengapa mengenal potensi diri penting sebelum memilih jurusan?</h2>
+            <p>Pemilihan jurusan memengaruhi proses belajar, biaya pendidikan, dan arah karier. Banyak siswa masih memilih tanpa pemetaan diri yang cukup.</p>
+          </div>
+
+          <div class="data-grid">
+            <article class="kpi-card">
+              <div class="kpi-badge-num amber tabular">32,6%</div>
+              <div>
+                <h3>Siswa SMK kurang yakin dengan kemampuan dirinya</h3>
+                <p>Hampir sepertiga siswa masih ragu menilai kekuatan dan kesiapan dirinya sendiri saat harus menentukan langkah setelah lulus sekolah.</p>
+                <span class="kpi-source">📊 Penelitian Siswa SMK (2026)</span>
+              </div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-badge-num rose tabular">42,1%</div>
+              <div>
+                <h3>Merasa fakultas sebelumnya bukan pilihan terbaik</h3>
+                <p>Dari alumni UI yang tidak ingin memilih fakultas yang sama, 42,1% menyebut fakultas sebelumnya tidak sesuai dengan bidang yang diminati.</p>
+                <span class="kpi-source">🎓 Survei Alumni UI</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="compare-problem-grid">
+            <article class="insight-box">
+              <div class="insight-head">
+                <h3>Risiko Memilih Tanpa Pemetaan Diri</h3>
+                <span class="pill-tag warn">Perlu Dihindari</span>
+              </div>
+              <ul class="insight-list">
+                <li><span>⚠️</span><div><strong>Ikut tren atau ikut teman:</strong> Memilih jurusan populer tanpa mengecek kecocokan gaya belajar dan kepribadian.</div></li>
+                <li><span>⚠️</span><div><strong>Tuntutan eksternal:</strong> Hanya mengikuti keinginan orang tua tanpa dialog berbasis data potensi diri.</div></li>
+                <li><span>⚠️</span><div><strong>Fokus prospek sesaat:</strong> Melihat prospek kerja tanpa mempertimbangkan minat dan kemampuan pribadi.</div></li>
+                <li><span>⚠️</span><div><strong>Risiko biaya & waktu:</strong> Berpotensi kehilangan motivasi kuliah atau merasa salah jurusan di tengah jalan.</div></li>
+              </ul>
+            </article>
+
+            <article class="insight-box">
+              <div class="insight-head">
+                <h3>Manfaat Mengenali Potensi Lebih Awal</h3>
+                <span class="pill-tag good">Tujuan Platform</span>
+              </div>
+              <ul class="insight-list">
+                <li><span>✓</span><div><strong>Pahami kelebihan & kekurangan:</strong> Mengetahui aspek apa yang sudah kuat dan mana yang perlu dilatih.</div></li>
+                <li><span>✓</span><div><strong>Bidang yang relevan:</strong> Menemukan pilihan prodi dan jalur pendidikan yang selaras dengan minat alami.</div></li>
+                <li><span>✓</span><div><strong>Kurangi risiko salah jurusan:</strong> Keputusan lebih objektif sehingga investasi waktu dan biaya pendidikan lebih tepat.</div></li>
+                <li><span>✓</span><div><strong>Alasan keputusan yang kuat:</strong> Punya dasar logis saat berdiskusi dengan orang tua maupun guru BK.</div></li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 2: SIAPA, KAPAN & DI MANA (WHO, WHEN, WHERE) -->
+      <section class="section" id="whoSection">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">UNTUK SIAPA & KAPAN DIBUTUHKAN</span>
+            <h2>Mendampingi masa transisi dari sekolah ke perguruan tinggi</h2>
+            <p>Dapat diakses secara online melalui smartphone maupun komputer dari berbagai daerah, sejak awal masa sekolah menengah hingga pasca kelulusan.</p>
+          </div>
+
+          <div class="audience-grid">
+            <article class="audience-card">
+              <div class="audience-icon">🧭</div>
+              <span class="phase">Kelas X – XI</span>
+              <h3>Eksplorasi Awal</h3>
+              <p>Waktu ideal mulai mengenali minat, bakat, dan kepribadian sebelum memasuki tahap akhir SMA/SMK/MA.</p>
+            </article>
+            <article class="audience-card">
+              <div class="audience-icon">🎯</div>
+              <span class="phase">Kelas XII</span>
+              <h3>Persiapan Kuliah</h3>
+              <p>Membantu menyaring dan membandingkan pilihan jurusan serta universitas menjelang seleksi masuk.</p>
+            </article>
+            <article class="audience-card">
+              <div class="audience-icon">🔄</div>
+              <span class="phase">Lulusan / Evaluasi Ulang</span>
+              <h3>Pertimbangan Ulang</h3>
+              <p>Untuk lulusan yang masih bingung, belum lolos pilihan pertama, ambil jeda (gap year), atau merasa kurang cocok.</p>
+            </article>
+            <article class="audience-card">
+              <div class="audience-icon">🤝</div>
+              <span class="phase">Pihak Pendukung</span>
+              <h3>Orang Tua & Guru BK</h3>
+              <p>Menjadi laporan visual objektif bagi orang tua, guru BK, dan konselor pendidikan dalam mendampingi siswa.</p>
+            </article>
+          </div>
+
+          <div class="moments-bar">
+            <div class="moments-title">
+              <strong>Kapan waktu paling tepat menggunakan CareerPath?</strong>
+              <span>Akses kapan saja saat menghadapi momen transisi pendidikan berikut:</span>
+            </div>
+            <div class="moments-pills">
+              <span class="moment-chip">📌 Mulai menentukan jurusan</span>
+              <span class="moment-chip">📝 Pendaftaran kuliah dibuka</span>
+              <span class="moment-chip">🔁 Belum lolos pilihan pertama</span>
+              <span class="moment-chip">⏳ Masa jeda sebelum kuliah</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 3: ALUR BERTAHAP (HOW) -->
+      <section class="section section-soft">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">PROSES BERTAHAP</span>
+            <h2>Tiga langkah membangun keputusan pendidikan yang matang</h2>
+            <p>Dirancang agar siswa tidak hanya mendapat skor tes, tetapi mampu membandingkan pilihan studi secara terstruktur.</p>
+          </div>
+          <div class="bento-steps">
+            <article class="step-card">
+              <div class="step-top"><div class="step-icon">📝</div><span class="step-num">LANGKAH 01</span></div>
+              <h3>Kenali Profil & Minat</h3>
+              <p>Isi jenjang serta tujuanmu, lalu jawab 18 pernyataan singkat berbasis model psikologi karier RIASEC.</p>
+            </article>
+            <article class="step-card">
+              <div class="step-top"><div class="step-icon">📊</div><span class="step-num">LANGKAH 02</span></div>
+              <h3>Pahami Kelebihan & Tantangan</h3>
+              <p>Lihat grafik radar 6 dimensi, persentase kecocokan, kekuatan utama, dan aspek yang perlu dikembangkan.</p>
+            </article>
+            <article class="step-card">
+              <div class="step-top"><div class="step-icon">⚖️</div><span class="step-num">LANGKAH 03</span></div>
+              <h3>Bandingkan & Diskusikan</h3>
+              <p>Bandingkan beberapa jurusan secara berdampingan, lalu simpan laporan PDF untuk diskusi dengan guru BK atau orang tua.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- PART 4: 6 TIPE MINAT -->
+      <section class="section" id="riasecSection">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">6 DIMENSI KEPRIBADIAN & MINAT</span>
+            <h2>Enam tipe minat RIASEC</h2>
+            <p>Setiap siswa memiliki kombinasi unik. Klik salah satu kartu untuk memahami kekuatan sekaligus area yang perlu dilatih.</p>
+          </div>
+          <div class="types-grid" id="typeCards"></div>
+        </div>
+      </section>
+
+      <!-- PART 5: EKSPLORASI & BANDINGKAN JURUSAN (SOLUSI KETERBATASAN INFO) -->
+      <section class="section section-soft" id="compareSection">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">EKSPLORASI INFORMASI PRODI</span>
+            <h2>Bandingkan pilihan jurusan sebelum memutuskan</h2>
+            <p>Mengatasi keterbatasan informasi program studi. Pilih dua jurusan di bawah untuk melihat perbedaan fokus belajar dan persiapannya.</p>
+          </div>
+
+          <div class="explorer-box">
+            <div class="compare-select-grid">
+              <div class="select-card">
+                <label for="landingCompareA">Pilihan Jurusan Pertama</label>
+                <select id="landingCompareA"></select>
+              </div>
+              <div class="select-card">
+                <label for="landingCompareB">Pilihan Jurusan Pembanding</label>
+                <select id="landingCompareB"></select>
+              </div>
+            </div>
+            <div class="compare-table-wrap" id="landingCompareTable"></div>
+            <div style="margin-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+              <span style="font-size:.84rem;color:var(--muted)">Ingin tahu jurusan mana yang paling cocok dengan kepribadianmu?</span>
+              <button class="btn btn-primary" id="compareStartBtn">Ikuti Tes Minat Sekarang →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">© 2026 CareerPath · Platform pengenalan potensi diri & eksplorasi pendidikan lanjutan.</footer>
+    </section>
+
+    <!-- 2. PRE-TEST VIEW -->
+    <section id="preTestView" class="view hidden">
+      <div class="container form-wrap">
+        <div class="form-panel">
+          <button class="btn btn-ghost" id="backLanding" style="margin:0 0 18px -10px">← Kembali ke beranda</button>
+          <div class="stepper">
+            <span class="step-pill">1. Profil & Tujuan</span>
+            <span class="step-pill idle">2. 18 Pertanyaan</span>
+            <span class="step-pill idle">3. Dasbor & Perbandingan</span>
+          </div>
+          <h2>Ceritakan kondisi belajarmu</h2>
+          <p>Informasi ini membantu kami menyesuaikan konteks laporan hasil dan saran persiapan yang tepat untukmu.</p>
+
+          <form id="profileForm" novalidate>
+            <div class="field">
+              <label for="nickname">Nama panggilan</label>
+              <input id="nickname" name="nickname" type="text" placeholder="Contoh: Dinda" maxlength="35" autocomplete="given-name">
+            </div>
+
+            <div class="field">
+              <label>Jenjang saat ini</label>
+              <div class="pill-select-group" id="levelGroup" role="radiogroup" aria-label="Jenjang saat ini">
+                <button type="button" class="choice-chip" data-value="SMA">SMA</button>
+                <button type="button" class="choice-chip" data-value="SMK">SMK</button>
+                <button type="button" class="choice-chip" data-value="MA / Sederajat">MA / Sederajat</button>
+                <button type="button" class="choice-chip" data-value="Lulusan">Lulusan baru</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Kelas / Status</label>
+              <div class="pill-select-group" id="gradeGroup" role="radiogroup" aria-label="Kelas saat ini">
+                <button type="button" class="choice-chip" data-value="10">Kelas X</button>
+                <button type="button" class="choice-chip" data-value="11">Kelas XI</button>
+                <button type="button" class="choice-chip" data-value="12">Kelas XII</button>
+                <button type="button" class="choice-chip" data-value="Alumni">Alumni / Jeda</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Fokus / Situasi saat ini</label>
+              <div class="pill-select-group cols-2" id="goalGroup" role="radiogroup" aria-label="Fokus saat ini">
+                <button type="button" class="choice-chip" data-value="Eksplorasi awal minat & bakat">🔍 Eksplorasi awal (X–XI)</button>
+                <button type="button" class="choice-chip" data-value="Persiapan pilih jurusan kuliah">🎓 Persiapan daftar kuliah (XII)</button>
+                <button type="button" class="choice-chip" data-value="Evaluasi ulang / Belum lolos pilihan 1">🔄 Evaluasi ulang / Belum lolos</button>
+                <button type="button" class="choice-chip" data-value="Cari arah studi atau kerja">💼 Cari arah studi / kerja</button>
+              </div>
+            </div>
+
+            <div id="profileError" class="inline-error hidden" role="alert"></div>
+            <button class="btn btn-primary btn-lg" type="submit" style="width:100%;margin-top:10px">Mulai 18 Pertanyaan →</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. QUIZ VIEW -->
+    <section id="quizView" class="view hidden">
+      <div class="container quiz-wrap">
+        <div class="quiz-shell">
+          <div class="quiz-header-card">
+            <div class="quiz-top">
+              <span id="questionCount" class="tabular">Soal 1 dari 18</span>
+              <span id="progressPercent" class="tabular">6% selesai</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" id="quizProgress"></div></div>
+          </div>
+
+          <div class="question-card">
+            <span class="question-tag" id="questionCategory">
+              <span class="tag-dot" id="questionDot"></span>
+              <span id="questionTagText">REALISTIC · R</span>
+            </span>
+            <h2 id="questionText"></h2>
+            <p class="sub">Jawab sesuai minat pribadimu—bukan karena ikut tren, teman, atau tuntutan orang lain.</p>
+            <div class="options" id="answerOptions"></div>
+          </div>
+
+          <div class="quiz-nav">
+            <button class="btn btn-outline" id="prevQuestion">← Sebelumnya</button>
+            <button class="btn btn-primary" id="nextQuestion">Selanjutnya →</button>
+          </div>
+          <p class="notice">Tips: Gunakan tombol angka <strong>1–4</strong> di keyboard untuk memilih jawaban dengan cepat.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. RESULT DASHBOARD VIEW -->
+    <section id="resultView" class="view hidden">
+      <div class="container result-wrap">
+        <div class="dash-topbar">
+          <div class="dash-profile">
+            <div class="avatar-lg" id="resultAvatar">DN</div>
+            <div>
+              <h2 id="greeting">Laporan Profil Minatmu</h2>
+              <div class="profile-meta-pills" id="profileMeta"></div>
+            </div>
+          </div>
+          <div class="dash-actions no-print">
+            <button class="btn btn-outline" id="retryTest">↻ Ulangi Tes</button>
+            <button class="btn btn-primary" id="printResult">⇩ Simpan Laporan (PDF)</button>
+          </div>
+        </div>
+
+        <div class="bento-main">
+          <section class="bento-card">
+            <div class="card-head">
+              <h3 class="card-title">Skor Kecocokan Utama</h3>
+              <span class="card-badge">Minat #1</span>
+            </div>
+            <div class="gauge-box">
+              <div class="gauge-svg-wrap" id="gaugeContainer"></div>
+              <div class="clarity-pill" id="clarityLabel">● Profil Terarah</div>
+              <div class="holland-strip">
+                <span>Kode Holland</span>
+                <strong id="hollandCode">R · I · A</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="bento-card">
+            <div class="card-head">
+              <h3 class="card-title">Peta Radar RIASEC</h3>
+              <span class="card-badge">6 Dimensi</span>
+            </div>
+            <div class="radar-wrap" id="radarChart"></div>
+          </section>
+
+          <section class="bento-card">
+            <div class="card-head">
+              <h3 class="card-title">Rincian Skor Kategori</h3>
+              <span class="card-badge tabular">Maks 12</span>
+            </div>
+            <div class="score-list" id="scoreChart"></div>
+          </section>
+        </div>
+
+        <!-- Top 2 Archetypes with Strengths & Growth Areas -->
+        <div class="top-types-grid" id="topTypes"></div>
+
+        <!-- Recommendations -->
+        <section class="recommend-panel">
+          <div class="recommend-header">
+            <div>
+              <h3>Eksplorasi Pilihan Jurusan & Karier</h3>
+              <p class="recommend-note" id="recommendationNote"></p>
+            </div>
+            <div class="segmented-tabs" role="tablist" aria-label="Jenis rekomendasi">
+              <button type="button" class="tab-btn active" id="studyTab" role="tab" aria-selected="true">🎓 Jurusan Kuliah</button>
+              <button type="button" class="tab-btn" id="jobTab" role="tab" aria-selected="false">💼 Karier Awal</button>
+            </div>
+          </div>
+
+          <div class="filter-row">
+            <div class="filter-chips" id="recFilters" aria-label="Filter berdasarkan kategori RIASEC"></div>
+            <span id="compareCounterHint" style="font-size:.78rem;color:var(--muted);font-weight:600">Pilih hingga 3 jurusan untuk dibandingkan di bawah</span>
+          </div>
+
+          <div class="recommend-grid" id="recommendations" aria-live="polite"></div>
+        </section>
+
+        <!-- Side-by-Side Comparison inside Result Dashboard -->
+        <section class="result-compare-box" id="resultCompareBox">
+          <div class="card-head" style="margin-bottom:10px">
+            <div>
+              <h3 class="card-title" style="font-size:1.05rem">⚖️ Perbandingan Pilihan Pendidikan</h3>
+              <p style="margin:3px 0 0;font-size:.84rem;color:var(--muted)">Bandingkan minimal 2 jurusan rekomendasi untuk menimbang fokus materi dan persiapannya secara objektif.</p>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm no-print" id="clearCompareBtn">Reset Pilihan</button>
+          </div>
+          <div class="compare-table-wrap" id="resultCompareTable"></div>
+        </section>
+
+        <!-- Decision Checklist & Counseling Guide -->
+        <section class="guidance-panel">
+          <div class="card-head" style="margin-bottom:6px">
+            <h3 class="card-title" style="font-size:1.05rem">🤝 Bekal Pertimbangan Matang & Diskusi BK / Orang Tua</h3>
+            <span class="card-badge" id="contextBadge">Langkah Lanjutan</span>
+          </div>
+          <p id="contextGuidanceText" style="margin:0;font-size:.88rem;color:var(--ink-2)"></p>
+          <div class="checklist-grid">
+            <label class="check-item"><input type="checkbox"><span><strong>Cek kecocokan diri:</strong> Pahami kelebihan dan hal yang perlu dilatih, bukan sekadar ikut tren atau teman.</span></label>
+            <label class="check-item"><input type="checkbox"><span><strong>Bandingkan minimal 2 prodi:</strong> Pelajari mata kuliah dan jenjangnya (S1/D4/D3) serta siapkan opsi cadangan.</span></label>
+            <label class="check-item"><input type="checkbox"><span><strong>Diskusi terarah:</strong> Bawa hasil PDF ini saat berkonsultasi dengan orang tua, guru BK, atau konselor pendidikan.</span></label>
+          </div>
+        </section>
+
+        <p class="disclaimer">Hasil ini merupakan alat eksplorasi awal untuk membantu pertimbangan yang lebih matang, bukan diagnosis psikologis atau penentu mutlak masa depan. Ketersediaan program studi, daya tampung seleksi, dan peluang kerja dapat berbeda di tiap daerah.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Detail Tipe RIASEC -->
+  <div id="typeModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button type="button" class="modal-close" id="closeModal" aria-label="Tutup detail">✕</button>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+        <div class="type-icon" id="modalIcon" style="width:52px;height:52px;font-size:1.6rem"></div>
+        <div>
+          <div class="type-code" id="modalCode"></div>
+          <h3 id="modalTitle" style="margin:2px 0 0;font-size:1.3rem;font-weight:800"></h3>
+        </div>
+      </div>
+      <p id="modalSub" style="font-weight:700;color:var(--ink);margin:0 0 8px;font-size:.95rem"></p>
+      <p id="modalDesc" style="color:var(--muted);margin:0 0 14px;font-size:.91rem"></p>
+      <div class="sw-grid">
+        <div class="strength-box"><strong>Kelebihan Utama:</strong> <span id="modalStrength"></span></div>
+        <div class="strength-box"><strong>Hal yang Perlu Dikembangkan:</strong> <span id="modalGrowth"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    const TYPES = {
+      R: { name: "Realistic", id: "R", title: "Praktis & suka bekerja langsung", icon: "🛠️", color: "#ea8c2d", bg: "#fff4e5", desc: "Kamu cenderung menyukai aktivitas nyata, praktik, alat, mesin, teknologi, atau kegiatan di luar ruangan. Kamu nyaman belajar dengan mencoba dan menghasilkan sesuatu.", strength: "Terampil menggunakan alat, berorientasi tindakan, tekun, dan senang melihat hasil kerja yang konkret.", growth: "Melatih kesabaran dalam membaca teori konseptual serta memperluas komunikasi saat bekerja dengan tim lintas bidang." },
+      I: { name: "Investigative", id: "I", title: "Analitis & suka mencari tahu", icon: "🔬", color: "#4f46e5", bg: "#eef2ff", desc: "Kamu tertarik memahami cara kerja sesuatu, mengamati, meneliti, memecahkan masalah, dan mencari jawaban berdasarkan data atau logika.", strength: "Rasa ingin tahu tinggi, berpikir kritis, teliti dalam analisis, dan senang memecahkan masalah.", growth: "Membiasakan diri mengambil keputusan tepat waktu agar tidak terlalu lama menganalisis tanpa eksekusi." },
+      A: { name: "Artistic", id: "A", title: "Kreatif & ekspresif", icon: "🎨", color: "#9333ea", bg: "#f5f3ff", desc: "Kamu senang menuangkan ide, membuat karya, bereksperimen dengan desain, musik, tulisan, atau bentuk ekspresi lainnya.", strength: "Imajinatif, orisinal, peka terhadap estetika, dan mampu menyampaikan gagasan dengan cara kreatif.", growth: "Mengasah manajemen waktu dan keteraturan administratif agar ide kreatif selesai sesuai target." },
+      S: { name: "Social", id: "S", title: "Peduli & suka membantu", icon: "🤝", color: "#10b981", bg: "#ecfdf5", desc: "Kamu menikmati interaksi, mendengarkan, mengajar, mendampingi, dan membantu orang lain berkembang atau menyelesaikan masalah.", strength: "Empati, komunikasi, kerja sama, kesabaran, dan kemampuan membangun hubungan.", growth: "Belajar menetapkan batasan pribadi dan mengambil keputusan objektif berbasis data saat diperlukan." },
+      E: { name: "Enterprising", id: "E", title: "Inisiatif & suka memimpin", icon: "🚀", color: "#ef4444", bg: "#fef2f2", desc: "Kamu tertarik mengajak orang bergerak, memimpin kegiatan, bernegosiasi, berwirausaha, dan mencapai target.", strength: "Percaya diri, persuasif, berani mengambil inisiatif, serta mampu mengorganisasi orang dan ide.", growth: "Memperkuat ketelitian pada detail teknis serta mendengar masukan tim secara mendalam." },
+      C: { name: "Conventional", id: "C", title: "Teratur & teliti", icon: "📋", color: "#0284c7", bg: "#f0f9ff", desc: "Kamu menyukai pekerjaan yang terstruktur, data, pencatatan, pengelolaan dokumen, dan mengikuti prosedur yang jelas.", strength: "Rapi, konsisten, teliti, terorganisasi, dan dapat diandalkan dalam mengelola informasi.", growth: "Melatih fleksibilitas ketika menghadapi perubahan mendadak atau tugas yang tidak memiliki panduan baku." }
+    };
+
+    const QUESTIONS = [
+      { c: "R", q: "Saya senang merakit, memperbaiki, atau mencoba alat dan benda di sekitar saya." },
+      { c: "R", q: "Saya menikmati kegiatan praktik seperti memasak, membuat produk, berkebun, atau menggunakan peralatan." },
+      { c: "R", q: "Saya lebih suka belajar dengan praktik langsung daripada hanya membaca teori." },
+      { c: "I", q: "Saya tertarik mencari tahu penyebab suatu masalah dan mencoba menemukan solusinya." },
+      { c: "I", q: "Saya menikmati pelajaran atau kegiatan yang melibatkan eksperimen, pengamatan, atau analisis data." },
+      { c: "I", q: "Ketika menemukan informasi baru, saya suka memeriksa fakta dan membandingkan sumbernya." },
+      { c: "A", q: "Saya senang membuat desain, menggambar, mengedit video, menulis, atau menciptakan karya." },
+      { c: "A", q: "Saya suka menyampaikan ide dengan cara yang unik dan tidak selalu mengikuti pola yang sama." },
+      { c: "A", q: "Saya tertarik pada kegiatan seni, konten kreatif, musik, fotografi, atau dunia visual." },
+      { c: "S", q: "Saya senang membantu teman memahami pelajaran atau menyelesaikan kesulitannya." },
+      { c: "S", q: "Saya menikmati kegiatan kelompok yang membuat saya bertemu dan berinteraksi dengan banyak orang." },
+      { c: "S", q: "Saya tertarik mendengarkan cerita orang lain dan membantu mereka menemukan jalan keluar." },
+      { c: "E", q: "Saya bersemangat ketika dipercaya memimpin kelompok atau mengatur sebuah kegiatan." },
+      { c: "E", q: "Saya suka menawarkan ide, melakukan presentasi, atau meyakinkan orang lain tentang suatu gagasan." },
+      { c: "E", q: "Saya tertarik mencoba berjualan, membuat usaha kecil, atau mengelola sebuah proyek." },
+      { c: "C", q: "Saya senang menyusun jadwal, merapikan dokumen, atau memastikan tugas selesai sesuai urutan." },
+      { c: "C", q: "Saya teliti saat mengerjakan tugas yang membutuhkan angka, tabel, atau pencatatan data." },
+      { c: "C", q: "Saya merasa nyaman bekerja dengan aturan dan langkah kerja yang jelas." }
+    ];
+
+    // Tiap item punya: [Nama Prodi, Deskripsi, Tags Fokus Kuliah, Jenjang/Jalur, Karakter/Persiapan]
+    const STUDY = {
+      R: [
+        ["Teknik Mesin", "Cocok untuk minat pada mesin, perakitan, dan pemecahan masalah teknis.", ["Mekanika", "Gambar Teknik", "Material", "Manufaktur"], "S1 / D4", "Kuat di fisika terapan, suka praktik bengkel & perancangan mekanis."],
+        ["Teknik Elektro", "Menggabungkan praktik perangkat, sistem kelistrikan, dan pemecahan masalah.", ["Rangkaian Listrik", "Elektronika", "Sistem Kendali"], "S1 / D4", "Tertarik kelistrikan, mikrokontroler, matematika dasar & praktik lab."],
+        ["Teknologi Rekayasa Otomotif", "Pilihan terapan bagi yang suka kendaraan, perawatan, dan teknologi otomotif.", ["Sistem Kendaraan", "Diagnosis Mesin", "Praktik Bengkel"], "D4 / D3", "Lebih banyak porsi praktik langsung dan kesiapan kerja industri."],
+        ["Agribisnis / Teknologi Pertanian", "Sesuai untuk minat pada kegiatan lapangan, produksi, dan pengolahan hasil.", ["Budidaya", "Alat Pertanian", "Pengolahan Hasil"], "S1 / D4 / D3", "Nyaman bekerja di lapangan maupun manajemen rantai produksi."]
+      ],
+      I: [
+        ["Informatika / Ilmu Komputer", "Sesuai untuk minat pada logika, analisis, dan pemecahan masalah digital.", ["Algoritma", "Pemrograman", "Basis Data", "AI"], "S1 / D4", "Membutuhkan ketekunan logika, pemecahan masalah, dan belajar mandiri."],
+        ["Statistika / Sains Data", "Cocok jika kamu menikmati angka, pola, data, dan penarikan kesimpulan.", ["Probabilitas", "Analisis Data", "Pemodelan"], "S1 / D4", "Kuat di matematika analitis dan tertarik membaca makna di balik angka."],
+        ["Biologi / Bioteknologi", "Pilihan bagi yang suka mengamati makhluk hidup dan melakukan penelitian.", ["Genetika", "Mikrobiologi", "Biokimia", "Riset"], "S1", "Teliti dalam eksperimen laboratorium, observasi, dan penulisan ilmiah."],
+        ["Teknologi Laboratorium Medis", "Jalur terapan untuk minat pada pemeriksaan sampel dan analisis laboratorium.", ["Hematologi", "Kimia Klinik", "Keselamatan Lab"], "D4 / D3", "Cocok bagi yang cermat dengan prosedur laboratorium kesehatan."]
+      ],
+      A: [
+        ["Desain Komunikasi Visual (DKV)", "Cocok untuk mengolah ide menjadi pesan visual dan karya desain.", ["Ilustrasi", "Tipografi", "Branding", "Desain Digital"], "S1 / D4", "Memerlukan portofolio visual, kepekaan estetika, dan riset audiens."],
+        ["Desain Produk", "Menggabungkan kreativitas dengan perancangan benda yang fungsional.", ["Sketsa", "Ergonomi", "Pemodelan 3D", "Prototyping"], "S1", "Menyeimbangkan rasa seni dengan fungsi teknis dan kebutuhan pengguna."],
+        ["Film & Televisi / Produksi Media", "Sesuai untuk minat pada cerita, video, produksi, dan komunikasi visual.", ["Sinematografi", "Editing", "Penulisan Skenario"], "D4 / S1", "Siap bekerja kolaboratif dalam proyek produksi kreatif dan deadline."],
+        ["Sastra / Penulisan Kreatif", "Pilihan bagi yang menikmati bahasa, cerita, dan ekspresi melalui tulisan.", ["Penulisan Kreatif", "Linguistik", "Penyuntingan"], "S1", "Gemar membaca mendalam, menulis rutin, dan peka terhadap konteks budaya."]
+      ],
+      S: [
+        ["Pendidikan / Keguruan", "Cocok untuk minat mengajar, mendampingi, dan membantu orang belajar.", ["Strategi Pembelajaran", "Psikologi Pendidikan", "Evaluasi"], "S1", "Sabar menjelaskan konsep, komunikatif, dan peduli perkembangan siswa."],
+        ["Psikologi", "Sesuai untuk ketertarikan pada perilaku, emosi, dan perkembangan manusia.", ["Psikologi Sosial", "Kognitif", "Perkembangan", "Riset"], "S1", "Menggabungkan empati mendengarkan dengan analisis riset dan observasi."],
+        ["Ilmu Kesejahteraan Sosial", "Pilihan bagi yang ingin terlibat dalam pemberdayaan dan pendampingan masyarakat.", ["Intervensi Sosial", "Komunitas", "Advokasi"], "S1", "Tertarik pada isu sosial, kerja lapangan, dan kolaborasi komunitas."],
+        ["Keperawatan", "Jalur profesi pelayanan yang membutuhkan empati dan kerja sama tim.", ["Anatomi", "Komunikasi Terapeutik", "Praktik Klinik"], "S1 / D3", "Siap secara fisik & emosional menghadapi praktik layanan kesehatan."]
+      ],
+      E: [
+        ["Manajemen", "Cocok untuk minat mengelola tim, proyek, organisasi, dan target bisnis.", ["Pemasaran", "Keuangan", "SDM", "Kewirausahaan"], "S1 / D4", "Fleksibel untuk banyak industri; perlu kemampuan komunikasi & analisis bisnis."],
+        ["Bisnis Digital", "Menggabungkan inisiatif bisnis dengan pemasaran dan teknologi digital.", ["E-Commerce", "Digital Marketing", "Analitik Bisnis"], "S1 / D4", "Adaptif terhadap tren teknologi, data pasar, dan pengembangan produk."],
+        ["Ilmu Komunikasi", "Sesuai untuk minat presentasi, persuasi, relasi, dan strategi komunikasi.", ["Public Relations", "Komunikasi Pemasaran", "Kampanye"], "S1", "Aktif membangun relasi, terampil berbicara/menulis, dan peka isu publik."],
+        ["Kewirausahaan", "Pilihan untuk mengembangkan ide menjadi produk atau usaha yang berkelanjutan.", ["Validasi Ide", "Model Bisnis", "Pengelolaan Usaha"], "S1 / D4", "Berani mengambil inisiatif terukur dan belajar dari uji coba lapangan."]
+      ],
+      C: [
+        ["Akuntansi", "Cocok untuk minat pada angka, pencatatan, ketelitian, dan prosedur.", ["Akuntansi Keuangan", "Audit", "Perpajakan"], "S1 / D4 / D3", "Membutuhkan ketelitian tinggi, integritas, dan pemahaman aturan keuangan."],
+        ["Administrasi Bisnis", "Sesuai untuk mengelola dokumen, proses kantor, dan layanan organisasi.", ["Administrasi Kantor", "Arsip", "Komunikasi Bisnis"], "D3 / D4 / S1", "Rapi mengatur sistem kerja, penjadwalan, dan koordinasi operasional."],
+        ["Manajemen Informatika", "Menggabungkan keteraturan proses dengan pengelolaan sistem dan data.", ["Basis Data", "Sistem Informasi", "Analisis Proses"], "D3 / D4", "Tertarik menjembatani kebutuhan bisnis yang rapi dengan sistem komputer."],
+        ["Perpajakan", "Jalur terapan bagi yang menyukai aturan, detail, dan pengolahan dokumen keuangan.", ["Ketentuan Pajak", "Pelaporan", "Akuntansi"], "D3 / D4", "Cermat membaca regulasi dan akurat dalam perhitungan pelaporan."]
+      ]
+    };
+
+    const JOBS = {
+      R: [
+        ["Teknisi / Teknisi Perawatan", "Memeriksa, memasang, dan memperbaiki peralatan atau mesin sesuai prosedur.", ["Penggunaan Alat", "Troubleshooting", "Keselamatan Kerja"]],
+        ["Operator Produksi", "Menjalankan proses produksi, memeriksa kualitas, dan menjaga kelancaran mesin.", ["Disiplin SOP", "Ketelitian", "Kerja Tim"]],
+        ["Teknisi Komputer / Elektronik Junior", "Membantu instalasi, pengecekan, dan perbaikan perangkat komputer atau elektronik.", ["Hardware", "Instalasi Dasar", "Diagnosis Masalah"]],
+        ["Wirausaha Produk / Jasa Praktis", "Membuat atau menawarkan produk dan jasa berbasis keterampilan praktik.", ["Keterampilan Teknis", "Layanan Pelanggan", "Pemasaran"]]
+      ],
+      I: [
+        ["Junior Data Analyst", "Membantu membersihkan, mengolah, dan menyajikan data untuk mendukung keputusan.", ["Spreadsheet", "Logika", "Visualisasi Data"]],
+        ["Asisten Laboratorium", "Menyiapkan alat dan bahan, membantu pengujian, serta mencatat hasil pemeriksaan.", ["Prosedur Lab", "Observasi", "Pencatatan"]],
+        ["Quality Control (QC) Junior", "Memeriksa produk atau proses agar sesuai standar mutu yang ditetapkan.", ["Inspeksi", "Dokumentasi", "Analisis Masalah"]],
+        ["Junior IT Support", "Membantu pengguna mengatasi kendala perangkat, aplikasi, dan jaringan dasar.", ["Troubleshooting", "Sistem Operasi", "Jaringan Dasar"]]
+      ],
+      A: [
+        ["Desainer Grafis Junior", "Membuat materi visual untuk kebutuhan promosi, informasi, atau identitas merek.", ["Prinsip Desain", "Tipografi", "Portofolio"]],
+        ["Content Creator", "Merancang dan memproduksi konten sesuai audiens serta tujuan komunikasi.", ["Ide Konten", "Penulisan", "Editing Visual"]],
+        ["Video Editor Junior", "Menyusun rekaman menjadi video yang runtut, menarik, dan sesuai brief.", ["Editing Video", "Storytelling", "Audio Dasar"]],
+        ["Ilustrator / Fotografer Pemula", "Menghasilkan karya visual untuk proyek, produk, atau kebutuhan publikasi.", ["Komposisi", "Teknik Visual", "Pengolahan Karya"]]
+      ],
+      S: [
+        ["Tutor / Pendamping Belajar", "Membantu siswa memahami materi dan membangun kebiasaan belajar.", ["Komunikasi", "Penguasaan Materi", "Kesabaran"]],
+        ["Staf Layanan Pelanggan", "Menjawab pertanyaan pelanggan dan membantu menyelesaikan kebutuhan atau keluhan.", ["Empati", "Komunikasi Lisan", "Pemecahan Masalah"]],
+        ["Asisten Kegiatan / Fasilitator", "Mendukung pelaksanaan kegiatan pendidikan, komunitas, atau pelatihan.", ["Public Speaking", "Koordinasi", "Kerja Tim"]],
+        ["Staf Rekrutmen / HR Junior", "Mendukung administrasi kandidat dan kegiatan operasional sumber daya manusia.", ["Komunikasi", "Administrasi", "Ketelitian"]]
+      ],
+      E: [
+        ["Sales Executive Junior", "Mengenalkan produk atau layanan, membangun relasi, dan membantu mencapai target penjualan.", ["Persuasif", "Negosiasi", "Orientasi Target"]],
+        ["Staf Pemasaran Digital", "Mendukung kampanye promosi melalui media sosial dan kanal digital.", ["Copywriting", "Media Sosial", "Analitik Dasar"]],
+        ["Koordinator Acara Junior", "Membantu merencanakan jadwal, kebutuhan, dan koordinasi sebuah acara.", ["Organisasi", "Manajemen Waktu", "Komunikasi"]],
+        ["Wirausaha Pemula", "Mengembangkan ide usaha sederhana, menguji pasar, dan mengelola operasional awal.", ["Riset Pelanggan", "Penjualan", "Keuangan Dasar"]]
+      ],
+      C: [
+        ["Staf Administrasi", "Mengelola dokumen, jadwal, surat-menyurat, dan data operasional kantor.", ["Pengolah Kata", "Spreadsheet", "Kearsipan"]],
+        ["Admin Keuangan Junior", "Membantu pencatatan transaksi, pemeriksaan bukti, dan penyusunan laporan sederhana.", ["Spreadsheet", "Ketelitian Angka", "Dasar Akuntansi"]],
+        ["Data Entry / Pengolah Data", "Memasukkan, memeriksa, dan memperbarui data dalam sistem organisasi.", ["Akurasi Ketik", "Spreadsheet", "Detail Oriented"]],
+        ["Staf Gudang / Inventory", "Mencatat barang masuk-keluar dan membantu memastikan stok sesuai catatan.", ["Sistem Inventori", "Pencatatan Stok", "Koordinasi"]]
+      ]
+    };
+
+    const ORDER = ["R", "I", "A", "S", "E", "C"];
+    const SCALE = [
+      { v: 1, label: "Sangat Tidak Setuju" },
+      { v: 2, label: "Tidak Setuju" },
+      { v: 3, label: "Setuju" },
+      { v: 4, label: "Sangat Setuju" }
+    ];
+
+    // Flatten study list for Explorer & Comparison
+    const ALL_STUDIES = ORDER.flatMap(code =>
+      STUDY[code].map((item, idx) => ({
+        uid: `${code}-${idx}`,
+        code,
+        name: item[0],
+        desc: item[1],
+        courses: item[2],
+        degree: item[3],
+        prep: item[4]
+      }))
+    );
+
+    const state = {
+      profile: { name: "", level: "", grade: "", goal: "" },
+      index: 0,
+      answers: Array(QUESTIONS.length).fill(null),
+      scores: null,
+      activeTab: "study",
+      activeFilter: "ALL",
+      compareIds: []
+    };
+
+    const $ = id => document.getElementById(id);
+
+    function showView(id) {
+      ["landingView", "preTestView", "quizView", "resultView"].forEach(v => $(v).classList.toggle("hidden", v !== id));
+      $("landingNav").classList.toggle("hidden", id !== "landingView");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      $("navStart").textContent = id === "landingView" ? "Mulai Tes →" : "← Ke Beranda";
+    }
+
+    // Smooth scroll nav links
+    document.querySelectorAll(".nav-link").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const target = $(btn.dataset.scroll);
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+      });
+    });
+
+    // Modal for RIASEC Type Info
+    function openTypeModal(code) {
+      const t = TYPES[code];
+      $("modalIcon").textContent = t.icon;
+      $("modalIcon").style.background = t.bg;
+      $("modalCode").textContent = `${code} · DIMENSI RIASEC`;
+      $("modalTitle").textContent = t.name;
+      $("modalSub").textContent = t.title;
+      $("modalDesc").textContent = t.desc;
+      $("modalStrength").textContent = t.strength;
+      $("modalGrowth").textContent = t.growth;
+      $("typeModal").classList.remove("hidden");
+      $("closeModal").focus();
+    }
+    function closeTypeModal() { $("typeModal").classList.add("hidden"); }
+
+    function renderTypeCards() {
+      $("typeCards").innerHTML = ORDER.map(code => {
+        const t = TYPES[code];
+        return `
+          <article class="type-card" tabindex="0" role="button" aria-label="Pelajari tipe ${t.name}" data-type="${code}">
+            <div>
+              <div class="type-id-wrap">
+                <div class="type-icon" style="background:${t.bg}">${t.icon}</div>
+                <div>
+                  <div class="type-code">${code} · RIASEC</div>
+                  <h3>${t.name}</h3>
+                </div>
+              </div>
+              <p style="margin-top:12px">${t.title}. ${t.desc}</p>
+            </div>
+            <span class="type-more">Lihat kelebihan & pengembangan →</span>
+          </article>
+        `;
+      }).join("");
+
+      $("typeCards").querySelectorAll(".type-card").forEach(card => {
+        const handler = () => openTypeModal(card.dataset.type);
+        card.addEventListener("click", handler);
+        card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handler(); } });
+      });
+    }
+
+    // Comparison Table Builder (shared by Landing Explorer & Result Dashboard)
+    function buildCompareTableHTML(items) {
+      if (!items.length) {
+        return `<p style="margin:8px 0 0;font-size:.86rem;color:var(--muted)">Belum ada jurusan yang dipilih. Klik tombol <strong>+ Bandingkan</strong> pada kartu jurusan di atas.</p>`;
+      }
+      const cols = items.map(s => `<th>${TYPES[s.code].icon} ${s.name}<br><span style="font-size:.74rem;font-weight:700;color:${TYPES[s.code].color}">${TYPES[s.code].name} (${s.code})</span></th>`).join("");
+      const row = (label, fn) => `<tr><th>${label}</th>${items.map(s => `<td>${fn(s)}</td>`).join("")}</tr>`;
+      return `
+        <table class="compare-table">
+          <thead><tr><th>Aspek Perbandingan</th>${cols}</tr></thead>
+          <tbody>
+            ${row("Jenjang Tersedia", s => `<strong>${s.degree}</strong>`)}
+            ${row("Gambaran Bidang", s => s.desc)}
+            ${row("Fokus Materi Kuliah", s => s.courses.map(c => `<span class="d-tag" style="display:inline-block;margin:2px 4px 2px 0">${c}</span>`).join(""))}
+            ${row("Kecocokan & Persiapan", s => s.prep)}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function initLandingCompare() {
+      const opts = ALL_STUDIES.map(s => `<option value="${s.uid}">${s.name} (${TYPES[s.code].name})</option>`).join("");
+      $("landingCompareA").innerHTML = opts;
+      $("landingCompareB").innerHTML = opts;
+      $("landingCompareA").value = "I-0"; // Informatika
+      $("landingCompareB").value = "A-0"; // DKV
+
+      const update = () => {
+        const a = ALL_STUDIES.find(s => s.uid === $("landingCompareA").value);
+        const b = ALL_STUDIES.find(s => s.uid === $("landingCompareB").value);
+        $("landingCompareTable").innerHTML = buildCompareTableHTML([a, b].filter(Boolean));
+      };
+      $("landingCompareA").addEventListener("change", update);
+      $("landingCompareB").addEventListener("change", update);
+      update();
+    }
+
+    // Pre-test Pill Selectors
+    function syncProfilePills() {
+      const bindGroup = (id, key) => {
+        $(id).querySelectorAll(".choice-chip").forEach(btn => {
+          const active = btn.dataset.value === state.profile[key];
+          btn.classList.toggle("active", active);
+          btn.setAttribute("aria-checked", String(active));
+        });
+      };
+      bindGroup("levelGroup", "level");
+      bindGroup("gradeGroup", "grade");
+      bindGroup("goalGroup", "goal");
+    }
+
+    $("levelGroup").addEventListener("click", e => {
+      const btn = e.target.closest(".choice-chip");
+      if (!btn) return;
+      state.profile.level = btn.dataset.value;
+      if (state.profile.level === "Lulusan") state.profile.grade = "Alumni";
+      else if (state.profile.grade === "Alumni") state.profile.grade = "";
+      $("profileError").classList.add("hidden");
+      syncProfilePills();
+    });
+
+    $("gradeGroup").addEventListener("click", e => {
+      const btn = e.target.closest(".choice-chip");
+      if (!btn) return;
+      state.profile.grade = btn.dataset.value;
+      if (state.profile.grade === "Alumni") state.profile.level = "Lulusan";
+      else if (state.profile.level === "Lulusan") state.profile.level = "";
+      $("profileError").classList.add("hidden");
+      syncProfilePills();
+    });
+
+    $("goalGroup").addEventListener("click", e => {
+      const btn = e.target.closest(".choice-chip");
+      if (!btn) return;
+      state.profile.goal = btn.dataset.value;
+      $("profileError").classList.add("hidden");
+      syncProfilePills();
+    });
+
+    // Quiz Rendering
+    function renderQuestion() {
+      const q = QUESTIONS[state.index];
+      const t = TYPES[q.c];
+      const n = state.index + 1;
+      const pct = Math.round((n / QUESTIONS.length) * 100);
+
+      $("questionCount").textContent = `Soal ${n} dari ${QUESTIONS.length}`;
+      $("progressPercent").textContent = `${pct}% selesai`;
+      $("quizProgress").style.width = `${pct}%`;
+      $("questionDot").style.background = t.color;
+      $("questionTagText").textContent = `${t.name.toUpperCase()} · ${q.c}`;
+      $("questionText").textContent = q.q;
+
+      $("answerOptions").innerHTML = SCALE.map((s, idx) => {
+        const selected = state.answers[state.index] === s.v;
+        return `
+          <button type="button" class="option ${selected ? "selected" : ""}" data-value="${s.v}" aria-pressed="${selected}">
+            <span class="option-left"><span class="radio"></span><span>${s.label}</span></span>
+            <span class="kbd-hint">${idx + 1}</span>
+          </button>
+        `;
+      }).join("");
+
+      $("answerOptions").querySelectorAll(".option").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.answers[state.index] = Number(btn.dataset.value);
+          renderQuestion();
+        });
+      });
+
+      $("prevQuestion").disabled = state.index === 0;
+      $("nextQuestion").textContent = state.index === QUESTIONS.length - 1 ? "Lihat Hasil Dasbor ✓" : "Selanjutnya →";
+      $("nextQuestion").disabled = state.answers[state.index] === null;
+    }
+
+    function calculateScores() {
+      const scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+      QUESTIONS.forEach((q, i) => {
+        const answer = state.answers[i];
+        if (!Number.isInteger(answer) || answer < 1 || answer > 4) throw new Error("Semua pertanyaan harus dijawab.");
+        scores[q.c] += answer;
+      });
+      return Object.fromEntries(ORDER.map(code => [code, { raw: scores[code], percent: Math.round((scores[code] / 12) * 100) }]));
+    }
+
+    function rankedTypes() {
+      return ORDER.map(code => ({ code, ...state.scores[code] }))
+        .sort((a, b) => b.raw - a.raw || ORDER.indexOf(a.code) - ORDER.indexOf(b.code));
+    }
+
+    function renderGauge(percent, spread) {
+      const radius = 78;
+      const circumference = Math.PI * radius;
+      const offset = circumference - (percent / 100) * circumference;
+
+      $("gaugeContainer").innerHTML = `
+        <svg width="210" height="122" viewBox="0 0 210 122" aria-label="Skor kecocokan utama ${percent}%">
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#06b6d4"/>
+            </linearGradient>
+          </defs>
+          <path d="M 27 104 A ${radius} ${radius} 0 0 1 183 104" fill="none" stroke="#eef2f6" stroke-width="16" stroke-linecap="round"/>
+          <path d="M 27 104 A ${radius} ${radius} 0 0 1 183 104" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="gauge-center-text">
+          <div class="gauge-number tabular">${percent}%</div>
+          <div class="gauge-caption">Skor Tertinggi</div>
+        </div>
+      `;
+
+      let clarityText = "● Minat Eksploratif (Multipotensi)";
+      if (spread >= 4) clarityText = "● Fokus Minat Sangat Kuat";
+      else if (spread >= 2) clarityText = "● Arah Minat Terarah";
+      $("clarityLabel").textContent = clarityText;
+    }
+
+    function renderRadarChart() {
+      const cx = 150, cy = 142, maxR = 92;
+      const angles = ORDER.map((_, i) => (i * 60 - 90) * (Math.PI / 180));
+
+      const gridPolygons = [0.25, 0.5, 0.75, 1].map(scale => {
+        const pts = angles.map(a => `${(cx + Math.cos(a) * maxR * scale).toFixed(1)},${(cy + Math.sin(a) * maxR * scale).toFixed(1)}`).join(" ");
+        return `<polygon points="${pts}" fill="none" stroke="#e2e8f0" stroke-width="1" />`;
+      }).join("");
+
+      const axes = angles.map(a => {
+        const x2 = (cx + Math.cos(a) * maxR).toFixed(1);
+        const y2 = (cy + Math.sin(a) * maxR).toFixed(1);
+        return `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#e2e8f0" stroke-width="1" />`;
+      }).join("");
+
+      const dataPoints = ORDER.map((code, i) => {
+        const r = (state.scores[code].raw / 12) * maxR;
+        return { x: cx + Math.cos(angles[i]) * r, y: cy + Math.sin(angles[i]) * r, code };
+      });
+
+      const dataPoly = dataPoints.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+      const vertices = dataPoints.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.5" fill="${TYPES[p.code].color}" stroke="#fff" stroke-width="2" />`).join("");
+
+      const labels = ORDER.map((code, i) => {
+        const labelR = maxR + 22;
+        const lx = cx + Math.cos(angles[i]) * labelR;
+        const ly = cy + Math.sin(angles[i]) * labelR;
+        let anchor = "middle";
+        if (Math.cos(angles[i]) > 0.25) anchor = "start";
+        else if (Math.cos(angles[i]) < -0.25) anchor = "end";
+        const dy = Math.sin(angles[i]) > 0.5 ? 6 : (Math.sin(angles[i]) < -0.5 ? -2 : 4);
+        return `<text x="${lx.toFixed(1)}" y="${(ly + dy).toFixed(1)}" text-anchor="${anchor}" font-size="11" font-weight="700" fill="#334155">${code} (${state.scores[code].percent}%)</text>`;
+      }).join("");
+
+      $("radarChart").innerHTML = `
+        <svg class="radar-svg" viewBox="0 0 300 284" role="img" aria-label="Grafik radar 6 dimensi RIASEC">
+          <defs>
+            <linearGradient id="radarFill" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="rgba(79, 70, 229, 0.28)" /><stop offset="100%" stop-color="rgba(6, 182, 212, 0.22)" />
+            </linearGradient>
+          </defs>
+          ${gridPolygons}${axes}
+          <polygon points="${dataPoly}" fill="url(#radarFill)" stroke="#4f46e5" stroke-width="2.2" stroke-linejoin="round" />
+          ${vertices}${labels}
+        </svg>
+      `;
+    }
+
+    function renderResultComparison() {
+      const items = state.compareIds.map(id => ALL_STUDIES.find(s => s.uid === id)).filter(Boolean);
+      $("resultCompareTable").innerHTML = buildCompareTableHTML(items);
+    }
+
+    function renderResults() {
+      state.scores = calculateScores();
+      const ranking = rankedTypes();
+      const top3 = ranking.slice(0, 3);
+      const first = ranking[0];
+      const second = ranking[1];
+      const spread = first.raw - ranking[5].raw;
+
+      const initials = state.profile.name.split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("") || "CP";
+      $("resultAvatar").textContent = initials;
+      $("greeting").textContent = `Profil Potensi & Arah Studi ${state.profile.name}`;
+
+      const gradeText = state.profile.grade === "Alumni" ? "Alumni / Jeda" : `Kelas ${state.profile.grade}`;
+      const holland = top3.map(x => x.code).join(" · ");
+
+      $("profileMeta").innerHTML = `
+        <span class="meta-chip">🎓 ${state.profile.level} · ${gradeText}</span>
+        <span class="meta-chip">🎯 ${state.profile.goal}</span>
+        <span class="meta-chip highlight">✦ Kode Holland: ${holland}</span>
+      `;
+
+      $("contextBadge").textContent = state.profile.goal;
+      $("contextGuidanceText").textContent = `Karena tujuanmu saat ini adalah "${state.profile.goal}", gunakan hasil dua minat tertinggimu (${TYPES[first.code].name} & ${TYPES[second.code].name}) sebagai pegangan utama untuk membandingkan jurusan—bukan sekadar mengikuti tren atau pilihan teman. Lakukan langkah berikut sebelum mengunci pilihan:`;
+
+      $("hollandCode").textContent = holland;
+      renderGauge(first.percent, spread);
+      renderRadarChart();
+
+      $("scoreChart").innerHTML = ranking.map(item => {
+        const t = TYPES[item.code];
+        return `
+          <div class="score-row">
+            <div class="score-label">
+              <span class="score-name">${t.icon} ${t.name}</span>
+              <span class="score-val tabular">${item.raw}/12 · ${item.percent}%</span>
+            </div>
+            <div class="score-track"><div class="score-fill" style="width:${item.percent}%;background:${t.color}"></div></div>
+          </div>
+        `;
+      }).join("");
+
+      $("topTypes").innerHTML = [first, second].map((item, i) => {
+        const t = TYPES[item.code];
+        return `
+          <article class="archetype-card">
+            <div class="archetype-accent" style="background:${t.color}"></div>
+            <div class="archetype-head">
+              <div class="archetype-title">
+                <div class="type-icon" style="background:${t.bg}">${t.icon}</div>
+                <div><h4>${t.name} (${t.id})</h4><span>${t.title}</span></div>
+              </div>
+              <span class="rank-pill tabular">Top #${i + 1} · ${item.percent}%</span>
+            </div>
+            <p class="archetype-desc">${t.desc}</p>
+            <div class="sw-grid">
+              <div class="strength-box"><strong>Kelebihan:</strong> ${t.strength}</div>
+              <div class="strength-box"><strong>Perlu Dikembangkan:</strong> ${t.growth}</div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      // Pre-select top 2 recommended majors for instant comparison!
+      state.compareIds = [`${first.code}-0`, `${second.code}-0`];
+      state.activeTab = "study";
+      state.activeFilter = "ALL";
+      setTab("study");
+      renderResultComparison();
+      showView("resultView");
+    }
+
+    function renderRecFilters(top3) {
+      const chips = [{ code: "ALL", label: "Semua (Top 3)" }, ...top3.map((r, idx) => ({ code: r.code, label: `#${idx + 1} ${TYPES[r.code].name}` }))];
+      $("recFilters").innerHTML = chips.map(c => `<button type="button" class="filter-chip ${state.activeFilter === c.code ? "active" : ""}" data-filter="${c.code}">${c.label}</button>`).join("");
+      $("recFilters").querySelectorAll(".filter-chip").forEach(btn => {
+        btn.addEventListener("click", () => { state.activeFilter = btn.dataset.filter; renderRecommendations(state.activeTab); });
+      });
+    }
+
+    function renderRecommendations(tab) {
+      const top3 = rankedTypes().slice(0, 3);
+      renderRecFilters(top3);
+
+      const isStudy = tab === "study";
+      $("resultCompareBox").classList.toggle("hidden", !isStudy);
+      $("compareCounterHint").classList.toggle("hidden", !isStudy);
+
+      const data = isStudy ? STUDY : JOBS;
+      const filteredTop = state.activeFilter === "ALL" ? top3 : top3.filter(r => r.code === state.activeFilter);
+      const countPerCat = state.activeFilter === "ALL" ? 2 : 4;
+
+      const cards = filteredTop.flatMap(result => {
+        const rank = top3.findIndex(x => x.code === result.code);
+        return (data[result.code] || []).slice(0, countPerCat).map((item, idx) => {
+          const studyIndex = STUDY[result.code].indexOf(item);
+          return {
+            uid: `${result.code}-${studyIndex >= 0 ? studyIndex : idx}`,
+            code: result.code,
+            percent: result.percent,
+            rank,
+            item
+          };
+        });
+      });
+
+      const summary = top3.map((r, i) => `${i + 1}. ${TYPES[r.code].name} (${r.percent}%)`).join(" · ");
+      $("recommendationNote").textContent = isStudy
+        ? `Disusun dari tiga dimensi RIASEC tertinggimu (${summary}). Klik "+ Bandingkan" untuk menimbang prodi pilihan.`
+        : `Gambaran profesi awal sesuai profil (${summary}) sebagai pertimbangan prospek jangka panjang.`;
+
+      $("recommendations").innerHTML = cards.map(({ uid, code, percent, rank, item }) => {
+        const t = TYPES[code];
+        const tagTitle = isStudy ? "Fokus:" : "Skill:";
+        const isCompared = isStudy && state.compareIds.includes(uid);
+        return `
+          <article class="recommend-card ${isCompared ? "compared" : ""}">
+            <div>
+              <div class="rec-top">
+                <span class="mini-label" style="background:${t.bg};color:${t.color}">Prioritas #${rank + 1} · ${t.name}</span>
+                <span class="fit-score-pill tabular">${percent}% Fit</span>
+              </div>
+              <h4>${item[0]} ${isStudy && item[3] ? `<span style="font-size:.78rem;color:var(--muted);font-weight:600">(${item[3]})</span>` : ""}</h4>
+              <p>${item[1]}</p>
+            </div>
+            <div class="rec-footer">
+              <div class="detail-tags">
+                <span class="d-tag" style="font-weight:800">${tagTitle}</span>
+                ${item[2].map(tag => `<span class="d-tag">${tag}</span>`).join("")}
+              </div>
+              ${isStudy ? `<button type="button" class="compare-toggle ${isCompared ? "active" : ""}" data-uid="${uid}">${isCompared ? "✓ Dibandingkan" : "+ Bandingkan"}</button>` : ""}
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      if (isStudy) {
+        $("recommendations").querySelectorAll(".compare-toggle").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const uid = btn.dataset.uid;
+            if (state.compareIds.includes(uid)) {
+              state.compareIds = state.compareIds.filter(id => id !== uid);
+            } else {
+              if (state.compareIds.length >= 3) state.compareIds.shift();
+              state.compareIds.push(uid);
+            }
+            renderRecommendations("study");
+            renderResultComparison();
+          });
+        });
+      }
+    }
+
+    function setTab(tab) {
+      state.activeTab = tab;
+      const study = tab === "study";
+      $("studyTab").classList.toggle("active", study);
+      $("jobTab").classList.toggle("active", !study);
+      $("studyTab").setAttribute("aria-selected", String(study));
+      $("jobTab").setAttribute("aria-selected", String(!study));
+      renderRecommendations(tab);
+    }
+
+    // Event Bindings
+    $("navStart").addEventListener("click", () => {
+      if (!$("landingView").classList.contains("hidden")) showView("preTestView");
+      else showView("landingView");
+    });
+    $("heroStart").addEventListener("click", () => showView("preTestView"));
+    $("compareStartBtn").addEventListener("click", () => showView("preTestView"));
+    $("heroCompareBtn").addEventListener("click", () => $("compareSection").scrollIntoView({ behavior: "smooth" }));
+    $("backLanding").addEventListener("click", () => showView("landingView"));
+    $("closeModal").addEventListener("click", closeTypeModal);
+    $("typeModal").addEventListener("click", e => { if (e.target === $("typeModal")) closeTypeModal(); });
+
+    $("profileForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const name = $("nickname").value.trim();
+      const errBox = $("profileError");
+      errBox.classList.add("hidden");
+
+      if (!name) { errBox.textContent = "Silakan isi nama panggilanmu terlebih dahulu."; errBox.classList.remove("hidden"); $("nickname").focus(); return; }
+      if (!state.profile.level) { errBox.textContent = "Silakan pilih jenjang pendidikanmu saat ini."; errBox.classList.remove("hidden"); return; }
+      if (!state.profile.grade) { errBox.textContent = "Silakan pilih kelas atau statusmu saat ini."; errBox.classList.remove("hidden"); return; }
+      if (!state.profile.goal) { errBox.textContent = "Silakan pilih fokus / situasimu saat ini."; errBox.classList.remove("hidden"); return; }
+
+      state.profile.name = name;
+      state.index = 0;
+      state.answers = Array(QUESTIONS.length).fill(null);
+      showView("quizView");
+      renderQuestion();
+    });
+
+    $("prevQuestion").addEventListener("click", () => { if (state.index > 0) { state.index--; renderQuestion(); } });
+    function goNextQuestion() {
+      if (state.answers[state.index] === null) return;
+      if (state.index < QUESTIONS.length - 1) { state.index++; renderQuestion(); }
+      else renderResults();
+    }
+    $("nextQuestion").addEventListener("click", goNextQuestion);
+    $("studyTab").addEventListener("click", () => setTab("study"));
+    $("jobTab").addEventListener("click", () => setTab("job"));
+    $("clearCompareBtn").addEventListener("click", () => { state.compareIds = []; renderRecommendations("study"); renderResultComparison(); });
+    $("retryTest").addEventListener("click", () => { state.index = 0; state.answers = Array(QUESTIONS.length).fill(null); state.scores = null; showView("preTestView"); });
+    $("printResult").addEventListener("click", () => window.print());
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && !$("typeModal").classList.contains("hidden")) { closeTypeModal(); return; }
+      if ($("quizView").classList.contains("hidden")) return;
+      if (["1", "2", "3", "4"].includes(e.key)) { state.answers[state.index] = Number(e.key); renderQuestion(); }
+      else if (e.key === "ArrowRight" && state.answers[state.index] !== null) goNextQuestion();
+      else if (e.key === "ArrowLeft" && state.index > 0) { state.index--; renderQuestion(); }
+    });
+
+    renderTypeCards();
+    initLandingCompare();
+    showView("landingView");
+  </script>
+</body>
+</html>
