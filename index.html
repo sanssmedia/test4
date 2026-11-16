@@ -29,11 +29,13 @@
       --amber: #d97706;
       --amber-soft: #fffbeb;
       --shadow-xs: 0 1px 2px rgba(15, 23, 42, .04);
-      --shadow-sm: 0 4px 16px rgba(15, 23, 42, .05);
-      --shadow-lg: 0 20px 50px rgba(15, 23, 42, .08);
+      --shadow-sm: 0 6px 20px rgba(15, 23, 42, .05);
+      --shadow-lg: 0 22px 54px rgba(15, 23, 42, .10);
       --radius-lg: 22px;
       --radius-md: 16px;
       --radius-sm: 12px;
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * { box-sizing: border-box; }
@@ -42,12 +44,53 @@
       margin: 0;
       font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
       color: var(--ink);
-      background:
-        radial-gradient(900px 500px at 85% -10%, rgba(79, 70, 229, .08), transparent 60%),
-        radial-gradient(700px 400px at 10% 0%, rgba(6, 182, 212, .07), transparent 55%),
-        var(--bg);
+      background: var(--bg);
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Animated Background Orbs */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: .55;
+      will-change: transform;
+    }
+    .orb-1 {
+      width: 560px; height: 560px;
+      top: -160px; right: -100px;
+      background: radial-gradient(circle, rgba(79, 70, 229, .18), transparent 70%);
+      animation: floatOrb1 16s ease-in-out infinite alternate;
+    }
+    .orb-2 {
+      width: 480px; height: 480px;
+      top: 120px; left: -140px;
+      background: radial-gradient(circle, rgba(6, 182, 212, .16), transparent 70%);
+      animation: floatOrb2 20s ease-in-out infinite alternate;
+    }
+    .orb-3 {
+      width: 420px; height: 420px;
+      bottom: -120px; right: 18%;
+      background: radial-gradient(circle, rgba(147, 51, 234, .10), transparent 70%);
+      animation: floatOrb1 18s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes floatOrb1 {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      100% { transform: translate3d(-45px, 40px, 0) scale(1.08); }
+    }
+    @keyframes floatOrb2 {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      100% { transform: translate3d(55px, -30px, 0) scale(1.12); }
     }
 
     button, input, select { font: inherit; }
@@ -57,18 +100,35 @@
     .container { width: min(1160px, calc(100% - 40px)); margin: auto; }
     :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
+    /* Scroll Reveal Animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px) scale(.985);
+      transition: opacity .65s var(--ease-out), transform .65s var(--ease-out);
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
     /* Navbar */
     .navbar {
       height: 72px;
-      background: rgba(255, 255, 255, .86);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, .82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid rgba(226, 232, 240, .85);
       display: flex;
       align-items: center;
       position: sticky;
       top: 0;
       z-index: 30;
+      transition: box-shadow .25s ease, background .25s ease;
+    }
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 8px 30px rgba(15, 23, 42, .06);
     }
     .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .brand {
@@ -80,70 +140,135 @@
       background: linear-gradient(135deg, #4f46e5, #06b6d4);
       display: grid; place-items: center; color: #fff;
       box-shadow: 0 8px 20px rgba(79, 70, 229, .28);
+      transition: transform .35s var(--spring);
     }
-    .nav-links { display: flex; align-items: center; gap: 6px; }
-    .nav-link {
-      border: 0; background: transparent; color: var(--muted);
-      font-size: .85rem; font-weight: 600; padding: 8px 12px; border-radius: 10px;
-      transition: .16s;
-    }
-    .nav-link:hover { color: var(--ink); background: var(--surface-soft); }
+    .brand:hover .brand-mark { transform: rotate(15deg) scale(1.06); }
 
-    /* Buttons */
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-link {
+      position: relative; border: 0; background: transparent; color: var(--muted);
+      font-size: .85rem; font-weight: 600; padding: 8px 13px; border-radius: 10px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .nav-link::after {
+      content: ""; position: absolute; left: 13px; right: 13px; bottom: 4px; height: 2px;
+      background: var(--primary); border-radius: 99px;
+      transform: scaleX(0); transform-origin: center; transition: transform .22s var(--ease-out);
+    }
+    .nav-link:hover { color: var(--ink); background: rgba(241, 245, 249, .7); }
+    .nav-link:hover::after { transform: scaleX(1); }
+
+    /* Buttons with Shimmer & Spring */
     .btn {
+      position: relative; overflow: hidden;
       border: 0; border-radius: 12px; padding: 11px 18px;
       font-size: .92rem; font-weight: 700;
-      transition: all .18s cubic-bezier(.2, .8, .2, 1);
+      transition: transform .24s var(--spring), box-shadow .24s ease, background .2s ease, border-color .2s ease;
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn:active:not(:disabled) { transform: scale(.98); }
+    .btn:active:not(:disabled) { transform: scale(.96); }
     .btn-primary {
-      background: linear-gradient(180deg, #564ef2 0%, #4338ca 100%);
+      background: linear-gradient(135deg, #564ef2 0%, #4338ca 100%);
       color: #fff;
-      box-shadow: 0 8px 20px rgba(79, 70, 229, .26), inset 0 1px 0 rgba(255, 255, 255, .2);
+      box-shadow: 0 8px 22px rgba(79, 70, 229, .28), inset 0 1px 0 rgba(255, 255, 255, .24);
     }
-    .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(79, 70, 229, .34); }
+    .btn-primary::before {
+      content: ""; position: absolute; top: 0; left: -120%; width: 65%; height: 100%;
+      background: linear-gradient(110deg, transparent, rgba(255, 255, 255, .28), transparent);
+      transform: skewX(-18deg);
+      transition: left .55s ease;
+    }
+    .btn-primary:hover:not(:disabled)::before { left: 140%; }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(79, 70, 229, .36);
+    }
     .btn-outline { background: #fff; color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow-xs); }
-    .btn-outline:hover:not(:disabled) { background: var(--surface-soft); border-color: #cbd5e1; }
+    .btn-outline:hover:not(:disabled) {
+      background: var(--surface-soft); border-color: #cbd5e1; transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
     .btn-ghost { background: transparent; color: var(--muted); padding: 8px 12px; }
     .btn-ghost:hover { background: var(--surface-soft); color: var(--ink); }
     .btn-sm { padding: 7px 12px; font-size: .78rem; border-radius: 9px; }
     .btn-lg { padding: 14px 24px; font-size: .96rem; border-radius: 14px; }
     .btn:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; }
 
-    .view { animation: fadeUp .32s cubic-bezier(.2, .8, .2, 1) both; min-height: calc(100vh - 72px); }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .view { animation: fadeUp .38s var(--ease-out) both; min-height: calc(100vh - 72px); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .eyebrow {
       display: inline-flex; align-items: center; gap: 7px;
-      background: #fff; border: 1px solid var(--line); color: var(--primary);
-      border-radius: 99px; padding: 5px 12px; font-size: .74rem; font-weight: 800;
+      background: rgba(255, 255, 255, .92); border: 1px solid var(--line); color: var(--primary);
+      border-radius: 99px; padding: 5px 13px; font-size: .74rem; font-weight: 800;
       letter-spacing: .3px; box-shadow: var(--shadow-xs);
     }
+    .pulse-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--primary);
+      animation: pulseRing 2s infinite;
+    }
+    @keyframes pulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, .45); }
+      70% { box-shadow: 0 0 0 7px rgba(79, 70, 229, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+    }
 
-    /* Hero */
-    .hero { padding: 52px 0 60px; }
+    /* Hero Staggered Intro */
+    .hero { padding: 52px 0 64px; }
     .hero-grid { display: grid; grid-template-columns: 1.04fr .96fr; align-items: center; gap: 44px; }
+    .hero-animate { opacity: 0; animation: heroIn .7s var(--ease-out) forwards; }
+    .hero-d1 { animation-delay: .05s; }
+    .hero-d2 { animation-delay: .13s; }
+    .hero-d3 { animation-delay: .21s; }
+    .hero-d4 { animation-delay: .29s; }
+    .hero-d5 { animation-delay: .36s; }
+    @keyframes heroIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .hero h1 {
       font-size: clamp(2.15rem, 4.2vw, 3.45rem); line-height: 1.1;
       letter-spacing: -1.7px; color: var(--ink); margin: 16px 0; font-weight: 800;
     }
     .hero h1 .grad {
-      background: linear-gradient(120deg, #4f46e5, #06b6d4);
+      background: linear-gradient(120deg, #4f46e5, #06b6d4, #4f46e5);
+      background-size: 200% auto;
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: gradientShift 5s ease infinite;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
     .hero-copy { font-size: 1rem; color: var(--muted); max-width: 540px; margin: 0 0 24px; }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
     .hero-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 28px; max-width: 520px; }
-    .stat-mini { background: rgba(255, 255, 255, .82); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+    .stat-mini {
+      background: rgba(255, 255, 255, .86); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px;
+      transition: transform .25s var(--spring), box-shadow .25s ease;
+    }
+    .stat-mini:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); }
     .stat-mini strong { display: block; font-size: 1.02rem; color: var(--ink); font-weight: 800; }
     .stat-mini span { font-size: .76rem; color: var(--muted); }
 
-    /* Preview Dashboard */
+    /* Interactive 3D Hero Preview Dashboard */
+    .preview-stage { perspective: 1100px; }
     .preview-shell {
-      background: rgba(255, 255, 255, .9); border: 1px solid rgba(226, 232, 240, .95);
+      background: rgba(255, 255, 255, .92); border: 1px solid rgba(226, 232, 240, .95);
       border-radius: 26px; padding: 18px;
-      box-shadow: var(--shadow-lg), 0 0 0 6px rgba(255, 255, 255, .45);
+      box-shadow: var(--shadow-lg), 0 0 0 6px rgba(255, 255, 255, .5);
+      transform-style: preserve-3d;
+      transition: transform .25s var(--ease-out), box-shadow .25s ease;
+      animation: floatCard 6s ease-in-out infinite;
+    }
+    .preview-shell:hover { animation-play-state: paused; box-shadow: 0 30px 65px rgba(15, 23, 42, .14), 0 0 0 6px rgba(255, 255, 255, .65); }
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
     }
     .preview-topbar {
       display: flex; align-items: center; justify-content: space-between;
@@ -168,37 +293,61 @@
       letter-spacing: .5px; margin-bottom: 8px; display: flex; justify-content: space-between;
     }
     .gauge-mini { display: flex; flex-direction: column; align-items: center; padding: 4px 0; }
+    .preview-gauge-path {
+      stroke-dasharray: 220;
+      stroke-dashoffset: 220;
+      animation: drawPreviewGauge 1.4s .4s var(--ease-out) forwards;
+    }
+    @keyframes drawPreviewGauge { to { stroke-dashoffset: 38; } }
     .gauge-val { font-size: 1.6rem; font-weight: 800; color: var(--ink); letter-spacing: -1px; margin-top: -12px; }
     .gauge-sub { font-size: .72rem; color: #047857; font-weight: 700; background: var(--emerald-soft); padding: 2px 8px; border-radius: 99px; margin-top: 4px; }
     .mini-bars { display: grid; gap: 9px; margin-top: 4px; }
     .m-bar-head { display: flex; justify-content: space-between; font-size: .76rem; font-weight: 700; margin-bottom: 4px; }
     .m-bar-track { height: 6px; border-radius: 99px; background: #e2e8f0; overflow: hidden; }
-    .m-bar-fill { height: 100%; border-radius: 99px; }
+    .m-bar-fill {
+      height: 100%; border-radius: 99px; transform-origin: left;
+      animation: growBar 1.1s .45s var(--ease-out) both;
+    }
+    @keyframes growBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
     .preview-matches {
       margin-top: 12px; background: #fff; border: 1px solid var(--line);
       border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      transition: transform .25s var(--spring), border-color .2s ease;
     }
+    .preview-shell:hover .preview-matches { transform: translateZ(14px); border-color: #c7d2fe; }
     .preview-matches strong { font-size: .83rem; display: block; }
     .preview-matches small { font-size: .74rem; color: var(--muted); }
     .fit-chip { background: var(--emerald-soft); color: #047857; font-size: .74rem; font-weight: 800; padding: 5px 10px; border-radius: 99px; white-space: nowrap; }
 
     /* Sections */
-    .section { padding: 62px 0; }
-    .section-soft { background: rgba(255, 255, 255, .52); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
-    .section-heading { text-align: center; max-width: 670px; margin: 0 auto 36px; }
+    .section { padding: 66px 0; }
+    .section-soft { background: rgba(255, 255, 255, .56); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); backdrop-filter: blur(8px); }
+    .section-heading { text-align: center; max-width: 670px; margin: 0 auto 38px; }
     .section-heading h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: -.8px; color: var(--ink); margin: 12px 0 8px; font-weight: 800; }
     .section-heading p { color: var(--muted); margin: 0; font-size: .95rem; }
 
-    /* NEW: Problem & Research Data Bento */
+    /* Interactive Hover Elevations for Cards */
+    .hover-lift {
+      transition: transform .28s var(--spring), box-shadow .28s ease, border-color .22s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: #cbd5e1;
+    }
+
+    /* Problem & Research Data Bento */
     .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 18px; }
     .kpi-card {
       background: #fff; border: 1px solid var(--line); border-radius: 22px;
       padding: 26px; box-shadow: var(--shadow-sm); display: flex; gap: 20px; align-items: flex-start;
     }
     .kpi-badge-num {
-      flex: none; min-width: 104px; padding: 16px 14px; border-radius: 18px; text-align: center;
+      flex: none; min-width: 108px; padding: 16px 14px; border-radius: 18px; text-align: center;
       font-size: 1.9rem; font-weight: 800; letter-spacing: -1px; line-height: 1;
+      transition: transform .3s var(--spring);
     }
+    .kpi-card:hover .kpi-badge-num { transform: scale(1.06) rotate(-2deg); }
     .kpi-badge-num.amber { background: var(--amber-soft); color: var(--amber); border: 1px solid #fde68a; }
     .kpi-badge-num.rose { background: var(--rose-soft); color: var(--rose); border: 1px solid #fecdd3; }
     .kpi-card h3 { margin: 0 0 6px; font-size: 1.05rem; font-weight: 800; }
@@ -210,10 +359,7 @@
     }
 
     .compare-problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .insight-box {
-      background: #fff; border: 1px solid var(--line); border-radius: 22px;
-      padding: 24px; box-shadow: var(--shadow-sm);
-    }
+    .insight-box { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 24px; box-shadow: var(--shadow-sm); }
     .insight-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .insight-head h3 { margin: 0; font-size: 1.05rem; font-weight: 800; }
     .pill-tag { font-size: .72rem; font-weight: 800; padding: 4px 10px; border-radius: 99px; }
@@ -224,10 +370,12 @@
       display: flex; align-items: flex-start; gap: 10px;
       background: var(--surface-soft); border: 1px solid var(--line-soft);
       border-radius: 12px; padding: 11px 13px; font-size: .87rem; color: var(--ink-2);
+      transition: transform .22s var(--ease-out), background .2s ease, border-color .2s ease;
     }
+    .insight-list li:hover { transform: translateX(4px); background: #fff; border-color: var(--line); }
     .insight-list li strong { color: var(--ink); }
 
-    /* NEW: Audience & Moments (Who, When, Where) */
+    /* Audience & Moments */
     .audience-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 18px; }
     .audience-card {
       background: #fff; border: 1px solid var(--line); border-radius: 20px;
@@ -236,7 +384,9 @@
     .audience-icon {
       width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
       font-size: 1.25rem; background: var(--primary-soft); color: var(--primary);
+      transition: transform .3s var(--spring);
     }
+    .audience-card:hover .audience-icon { transform: scale(1.12) rotate(-6deg); }
     .audience-card .phase { font-size: .72rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: .5px; }
     .audience-card h3 { margin: 0; font-size: .98rem; font-weight: 800; }
     .audience-card p { margin: 0; font-size: .84rem; color: var(--muted); }
@@ -252,7 +402,9 @@
     .moment-chip {
       background: var(--surface-soft); border: 1px solid var(--line); border-radius: 99px;
       padding: 7px 13px; font-size: .8rem; font-weight: 700; color: var(--ink-2);
+      transition: transform .2s var(--spring), background .2s ease;
     }
+    .moment-chip:hover { transform: translateY(-2px); background: var(--primary-soft); color: var(--primary); border-color: #c7d2fe; }
 
     /* Steps & RIASEC */
     .bento-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -261,57 +413,51 @@
       padding: 24px; box-shadow: var(--shadow-sm);
     }
     .step-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .step-icon { width: 44px; height: 44px; border-radius: 13px; background: var(--primary-soft); color: var(--primary); display: grid; place-items: center; font-size: 1.2rem; }
+    .step-icon {
+      width: 44px; height: 44px; border-radius: 13px; background: var(--primary-soft); color: var(--primary);
+      display: grid; place-items: center; font-size: 1.2rem;
+      transition: transform .3s var(--spring);
+    }
+    .step-card:hover .step-icon { transform: scale(1.12) rotate(6deg); }
     .step-num { font-size: .74rem; font-weight: 800; color: var(--muted); background: var(--surface-soft); border: 1px solid var(--line); padding: 4px 10px; border-radius: 99px; }
     .step-card h3 { margin: 0 0 6px; font-size: 1.04rem; font-weight: 800; }
     .step-card p { margin: 0; color: var(--muted); font-size: .89rem; }
 
     .types-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .type-card {
-      cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      cursor: pointer;
       display: flex; flex-direction: column; justify-content: space-between; gap: 14px;
     }
-    .type-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: #c7d2fe; }
+    .type-card:hover { border-color: #c7d2fe; }
     .type-id-wrap { display: flex; align-items: center; gap: 12px; }
-    .type-icon { width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; font-size: 1.35rem; flex: none; }
+    .type-icon {
+      width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; font-size: 1.35rem; flex: none;
+      transition: transform .3s var(--spring);
+    }
+    .type-card:hover .type-icon { transform: scale(1.14) rotate(-6deg); }
     .type-card h3 { margin: 0; font-size: 1.02rem; font-weight: 800; }
     .type-code { font-size: .72rem; color: var(--muted); font-weight: 700; letter-spacing: .5px; }
     .type-card p { margin: 0; color: var(--muted); font-size: .87rem; }
-    .type-more { font-size: .78rem; font-weight: 700; color: var(--primary); }
+    .type-more { font-size: .78rem; font-weight: 700; color: var(--primary); display: inline-flex; align-items: center; gap: 4px; transition: gap .2s ease; }
+    .type-card:hover .type-more { gap: 8px; }
 
-    /* NEW: Major Explorer & Comparison Table */
-    .explorer-box {
-      background: #fff; border: 1px solid var(--line); border-radius: 24px;
-      padding: clamp(20px, 3vw, 28px); box-shadow: var(--shadow-sm);
-    }
-    .explorer-controls {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
-      margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line-soft);
-    }
+    /* Major Explorer & Comparison Table */
+    .explorer-box { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: clamp(20px, 3vw, 28px); box-shadow: var(--shadow-sm); }
     .compare-select-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
-    .select-card {
-      background: var(--surface-soft); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px;
-    }
+    .select-card { background: var(--surface-soft); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; transition: border-color .2s; }
+    .select-card:focus-within { border-color: var(--primary); }
     .select-card label { display: block; font-size: .76rem; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
-    .select-card select {
-      width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
-      background: #fff; color: var(--ink); font-weight: 700; font-size: .9rem;
-    }
+    .select-card select { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: #fff; color: var(--ink); font-weight: 700; font-size: .9rem; }
     .compare-table-wrap { overflow-x: auto; }
     .compare-table {
       width: 100%; border-collapse: separate; border-spacing: 0;
-      border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
-      font-size: .86rem;
+      border: 1px solid var(--line); border-radius: 16px; overflow: hidden; font-size: .86rem;
+      animation: tableFade .28s var(--ease-out);
     }
-    .compare-table th, .compare-table td {
-      padding: 13px 15px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top;
-    }
-    .compare-table th {
-      background: var(--surface-soft); font-weight: 800; color: var(--ink); width: 22%;
-    }
-    .compare-table thead th {
-      background: #f1f5f9; font-size: .92rem; border-bottom: 1px solid var(--line);
-    }
+    @keyframes tableFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .compare-table th, .compare-table td { padding: 13px 15px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+    .compare-table th { background: var(--surface-soft); font-weight: 800; color: var(--ink); width: 22%; }
+    .compare-table thead th { background: #f1f5f9; font-size: .92rem; border-bottom: 1px solid var(--line); }
     .compare-table tr:last-child th, .compare-table tr:last-child td { border-bottom: 0; }
 
     .footer { padding: 26px 0; color: var(--muted); text-align: center; font-size: .84rem; border-top: 1px solid var(--line); background: #fff; }
@@ -338,13 +484,23 @@
     .pill-select-group.cols-2 { grid-template-columns: repeat(2, 1fr); }
     .choice-chip {
       border: 1.5px solid var(--line); background: var(--surface-soft); color: var(--ink-2);
-      border-radius: 12px; padding: 11px 10px; font-size: .84rem; font-weight: 700; text-align: center; transition: .16s;
+      border-radius: 12px; padding: 11px 10px; font-size: .84rem; font-weight: 700; text-align: center;
+      transition: transform .18s var(--spring), border-color .16s ease, background .16s ease, color .16s ease;
     }
-    .choice-chip:hover { border-color: #c7d2fe; background: #fff; }
-    .choice-chip.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, .08); }
+    .choice-chip:hover { border-color: #c7d2fe; background: #fff; transform: translateY(-1px); }
+    .choice-chip.active {
+      border-color: var(--primary); background: var(--primary-soft); color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, .1); transform: scale(1.02);
+    }
     .inline-error {
       margin-top: 8px; font-size: .82rem; font-weight: 600; color: #dc2626;
       background: #fef2f2; border: 1px solid #fecaca; padding: 9px 12px; border-radius: 10px;
+      animation: shakeError .36s ease;
+    }
+    @keyframes shakeError {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
     }
 
     /* Quiz View */
@@ -353,8 +509,27 @@
     .quiz-header-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px 20px; margin-bottom: 18px; box-shadow: var(--shadow-xs); }
     .quiz-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: .84rem; font-weight: 700; color: var(--muted); }
     .progress-track { height: 8px; background: #eef2f6; border-radius: 99px; overflow: hidden; }
-    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 99px; transition: width .32s cubic-bezier(.2, .8, .2, 1); }
-    .question-card { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: clamp(24px, 5vw, 40px); box-shadow: var(--shadow-lg); }
+    .progress-fill {
+      position: relative; height: 100%; width: 0;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 99px; transition: width .38s var(--ease-out);
+    }
+    .progress-fill::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .4), transparent);
+      animation: progressShimmer 1.8s infinite;
+    }
+    @keyframes progressShimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+    .question-card {
+      background: #fff; border: 1px solid var(--line); border-radius: 24px;
+      padding: clamp(24px, 5vw, 40px); box-shadow: var(--shadow-lg);
+    }
+    .question-slide-next { animation: slideNext .28s var(--ease-out); }
+    .question-slide-prev { animation: slidePrev .28s var(--ease-out); }
+    @keyframes slideNext { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slidePrev { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: translateX(0); } }
+
     .question-tag { display: inline-flex; align-items: center; gap: 7px; border-radius: 99px; padding: 5px 12px; background: var(--surface-soft); border: 1px solid var(--line); color: var(--ink-2); font-size: .75rem; font-weight: 800; margin-bottom: 16px; }
     .tag-dot { width: 8px; height: 8px; border-radius: 50%; }
     .question-card h2 { font-size: clamp(1.3rem, 2.7vw, 1.75rem); line-height: 1.38; letter-spacing: -.4px; color: var(--ink); margin: 0 0 8px; font-weight: 800; }
@@ -363,14 +538,25 @@
     .option {
       border: 1.5px solid var(--line); background: var(--surface-soft); border-radius: 14px;
       padding: 15px 16px; text-align: left; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      color: var(--ink); font-weight: 700; font-size: .92rem; transition: all .16s ease;
+      color: var(--ink); font-weight: 700; font-size: .92rem;
+      transition: transform .18s var(--spring), border-color .16s ease, background .16s ease, box-shadow .16s ease;
     }
     .option-left { display: flex; align-items: center; gap: 12px; }
-    .option:hover { border-color: #a5b4fc; background: #fff; }
-    .option.selected { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, .1); }
-    .option .radio { width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 50%; flex: none; display: grid; place-items: center; background: #fff; }
+    .option:hover { border-color: #a5b4fc; background: #fff; transform: translateY(-2px); }
+    .option.selected {
+      border-color: var(--primary); background: var(--primary-soft); color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, .12);
+      animation: optPop .25s var(--spring);
+    }
+    @keyframes optPop {
+      0% { transform: scale(.98); }
+      50% { transform: scale(1.015); }
+      100% { transform: scale(1); }
+    }
+    .option .radio { width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 50%; flex: none; display: grid; place-items: center; background: #fff; transition: border-color .15s; }
     .option.selected .radio { border-color: var(--primary); }
-    .option.selected .radio:after { content: ""; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; }
+    .option.selected .radio:after { content: ""; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; animation: dotPop .2s var(--spring); }
+    @keyframes dotPop { from { transform: scale(0); } to { transform: scale(1); } }
     .kbd-hint { font-size: .72rem; font-weight: 700; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
     .option.selected .kbd-hint { border-color: #c7d2fe; color: var(--primary); }
     .quiz-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
@@ -383,6 +569,7 @@
       background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 20px 24px;
       display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
       margin-bottom: 18px; box-shadow: var(--shadow-sm);
+      animation: dashBlockIn .45s var(--ease-out) both;
     }
     .dash-profile { display: flex; align-items: center; gap: 14px; }
     .avatar-lg {
@@ -400,13 +587,25 @@
     .dash-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
     .bento-main { display: grid; grid-template-columns: .95fr 1.05fr 1.2fr; gap: 18px; margin-bottom: 18px; }
-    .bento-card { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 22px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+    .bento-card {
+      background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 22px;
+      box-shadow: var(--shadow-sm); display: flex; flex-direction: column;
+      animation: dashBlockIn .55s var(--ease-out) both;
+    }
+    .bento-card:nth-child(2) { animation-delay: .08s; }
+    .bento-card:nth-child(3) { animation-delay: .16s; }
+    @keyframes dashBlockIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
     .card-title { font-size: .95rem; font-weight: 800; color: var(--ink); margin: 0; }
     .card-badge { font-size: .72rem; font-weight: 700; color: var(--muted); background: var(--surface-soft); border: 1px solid var(--line); padding: 3px 9px; border-radius: 99px; }
 
     .gauge-box { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1; padding: 6px 0; }
     .gauge-svg-wrap { position: relative; width: 210px; height: 122px; }
+    .gauge-arc-fill { transition: stroke-dashoffset 1.1s var(--ease-out); }
     .gauge-center-text { position: absolute; inset: auto 0 6px 0; text-align: center; }
     .gauge-number { font-size: 2.35rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1; color: var(--ink); }
     .gauge-caption { font-size: .75rem; color: var(--muted); font-weight: 600; margin-top: 3px; }
@@ -417,16 +616,28 @@
 
     .radar-wrap { display: grid; place-items: center; flex: 1; }
     .radar-svg { width: 100%; max-width: 280px; height: auto; overflow: visible; }
+    .radar-data-group {
+      transform-origin: 150px 142px;
+      animation: radarBloom .85s .2s var(--spring) both;
+    }
+    @keyframes radarBloom {
+      from { opacity: 0; transform: scale(.15); }
+      to { opacity: 1; transform: scale(1); }
+    }
 
     .score-list { display: grid; gap: 13px; flex: 1; align-content: center; }
     .score-label { display: flex; justify-content: space-between; align-items: center; font-size: .84rem; font-weight: 700; margin-bottom: 5px; }
     .score-name { display: flex; align-items: center; gap: 7px; color: var(--ink); }
     .score-val { color: var(--muted); font-size: .8rem; }
     .score-track { height: 8px; background: #eef2f6; border-radius: 99px; overflow: hidden; }
-    .score-fill { height: 100%; border-radius: 99px; transition: width .65s cubic-bezier(.2, .8, .2, 1); }
+    .score-fill { height: 100%; width: 0%; border-radius: 99px; transition: width .95s var(--ease-out); }
 
     .top-types-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
-    .archetype-card { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 22px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+    .archetype-card {
+      background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 22px;
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+      animation: dashBlockIn .6s .22s var(--ease-out) both;
+    }
     .archetype-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
     .archetype-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
     .archetype-title { display: flex; align-items: center; gap: 12px; }
@@ -438,28 +649,30 @@
     .strength-box { background: var(--surface-soft); border: 1px solid var(--line-soft); border-radius: 12px; padding: 10px 13px; font-size: .82rem; color: var(--ink-2); }
     .strength-box strong { color: var(--ink); }
 
-    /* Recommendations & Comparison in Result */
-    .recommend-panel { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: clamp(20px, 3vw, 28px); box-shadow: var(--shadow-sm); margin-bottom: 18px; }
+    /* Recommendations & Comparison */
+    .recommend-panel { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: clamp(20px, 3vw, 28px); box-shadow: var(--shadow-sm); margin-bottom: 18px; animation: dashBlockIn .6s .3s var(--ease-out) both; }
     .recommend-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
     .recommend-header h3 { margin: 0 0 4px; font-size: 1.14rem; font-weight: 800; }
     .recommend-note { color: var(--muted); font-size: .86rem; margin: 0; max-width: 640px; }
     .segmented-tabs { display: inline-flex; background: var(--surface-soft); border: 1px solid var(--line); padding: 4px; border-radius: 12px; gap: 4px; }
-    .tab-btn { border: 0; background: transparent; color: var(--muted); padding: 8px 16px; border-radius: 9px; font-size: .86rem; font-weight: 700; transition: .16s; }
-    .tab-btn.active { background: #fff; color: var(--ink); box-shadow: 0 2px 6px rgba(15, 23, 42, .08); }
+    .tab-btn { border: 0; background: transparent; color: var(--muted); padding: 8px 16px; border-radius: 9px; font-size: .86rem; font-weight: 700; transition: all .2s ease; }
+    .tab-btn.active { background: #fff; color: var(--ink); box-shadow: 0 2px 8px rgba(15, 23, 42, .08); }
     .filter-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-bottom: 16px; margin-bottom: 18px; border-bottom: 1px solid var(--line-soft); }
     .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .filter-chip { border: 1px solid var(--line); background: #fff; color: var(--muted); padding: 6px 12px; border-radius: 99px; font-size: .78rem; font-weight: 700; transition: .15s; }
-    .filter-chip:hover { border-color: #cbd5e1; color: var(--ink); }
+    .filter-chip { border: 1px solid var(--line); background: #fff; color: var(--muted); padding: 6px 12px; border-radius: 99px; font-size: .78rem; font-weight: 700; transition: all .18s var(--spring); }
+    .filter-chip:hover { border-color: #cbd5e1; color: var(--ink); transform: translateY(-1px); }
     .filter-chip.active { background: var(--ink); border-color: var(--ink); color: #fff; }
 
     .recommend-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .recommend-card {
       border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; background: #fff;
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      transition: transform .24s var(--spring), box-shadow .24s ease, border-color .2s ease;
       display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
     }
+    .recommend-card.animate-in { animation: cardPopIn .38s var(--ease-out) both; }
+    @keyframes cardPopIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
     .recommend-card.compared { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79, 70, 229, .14); }
-    .recommend-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .recommend-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); }
     .rec-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
     .mini-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .5px; font-weight: 800; padding: 3px 9px; border-radius: 99px; }
     .fit-score-pill { font-size: .74rem; font-weight: 800; color: #047857; background: var(--emerald-soft); padding: 3px 9px; border-radius: 99px; }
@@ -471,14 +684,12 @@
     .compare-toggle {
       border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink-2);
       border-radius: 9px; padding: 6px 11px; font-size: .75rem; font-weight: 700; white-space: nowrap;
+      transition: transform .18s var(--spring), background .18s ease, color .18s ease;
     }
+    .compare-toggle:hover { transform: scale(1.03); }
     .compare-toggle.active { background: var(--primary); border-color: var(--primary); color: #fff; }
 
-    /* Result Bottom: Comparison + Decision Readiness */
-    .result-compare-box {
-      background: #fff; border: 1px solid var(--line); border-radius: 22px;
-      padding: 22px; box-shadow: var(--shadow-sm); margin-bottom: 18px;
-    }
+    .result-compare-box { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 22px; box-shadow: var(--shadow-sm); margin-bottom: 18px; }
     .guidance-panel {
       background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
       border: 1px solid var(--line); border-radius: 22px; padding: 24px; box-shadow: var(--shadow-sm);
@@ -487,15 +698,33 @@
     .check-item {
       background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px;
       display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: .84rem;
+      transition: transform .2s var(--spring), border-color .2s ease, background .2s ease;
     }
-    .check-item input { margin-top: 3px; accent-color: var(--primary); width: 16px; height: 16px; flex: none; }
+    .check-item:hover { transform: translateY(-2px); border-color: #cbd5e1; }
+    .check-item:has(input:checked) { background: var(--emerald-soft); border-color: #a7f3d0; }
+    .check-item input { margin-top: 3px; accent-color: var(--emerald); width: 16px; height: 16px; flex: none; }
 
     .disclaimer { font-size: .8rem; color: var(--muted); text-align: center; margin: 22px auto 0; max-width: 820px; }
 
-    /* Modal */
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, .45); backdrop-filter: blur(6px); display: grid; place-items: center; padding: 20px; z-index: 50; }
-    .modal-card { width: min(520px, 100%); background: #fff; border-radius: 24px; padding: 28px; box-shadow: 0 25px 60px rgba(15, 23, 42, .22); border: 1px solid var(--line); position: relative; }
-    .modal-close { position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); font-weight: 700; display: grid; place-items: center; }
+    /* Animated Modal */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, .45); backdrop-filter: blur(6px);
+      display: grid; place-items: center; padding: 20px; z-index: 50;
+      animation: backdropIn .2s ease;
+    }
+    @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card {
+      width: min(520px, 100%); background: #fff; border-radius: 24px; padding: 28px;
+      box-shadow: 0 25px 60px rgba(15, 23, 42, .22); border: 1px solid var(--line); position: relative;
+      animation: modalPop .28s var(--spring);
+    }
+    @keyframes modalPop { from { opacity: 0; transform: scale(.92) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-close {
+      position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; border-radius: 10px;
+      border: 1px solid var(--line); background: var(--surface-soft); color: var(--ink); font-weight: 700; display: grid; place-items: center;
+      transition: transform .2s var(--spring), background .2s ease;
+    }
+    .modal-close:hover { background: #e2e8f0; transform: rotate(90deg); }
 
     /* Responsive */
     @media (max-width: 1000px) {
@@ -520,11 +749,21 @@
       .kpi-card { flex-direction: column; gap: 14px; }
     }
 
+    /* Accessibility: Reduce Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+
     @media print {
       @page { size: A4; margin: 12mm; }
       body { background: #fff !important; font-size: 9.5pt; }
-      .navbar, .no-print, .footer, .dash-actions, .filter-row, .segmented-tabs, .compare-toggle { display: none !important; }
-      .view { display: none !important; }
+      .ambient-bg, .navbar, .no-print, .footer, .dash-actions, .filter-row, .segmented-tabs, .compare-toggle { display: none !important; }
+      .view { display: none !important; animation: none !important; }
       #resultView { display: block !important; min-height: 0; }
       .container { width: 100%; max-width: none; }
       .result-wrap { padding: 0; }
@@ -532,7 +771,7 @@
       .bento-main > :last-child { grid-column: auto; }
       .top-types-grid, .recommend-grid, .checklist-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
       .bento-card, .archetype-card, .recommend-card, .dash-topbar, .guidance-panel {
-        box-shadow: none; break-inside: avoid;
+        box-shadow: none; break-inside: avoid; animation: none !important;
         print-color-adjust: exact; -webkit-print-color-adjust: exact;
       }
     }
@@ -540,7 +779,14 @@
 </head>
 <body>
 
-  <header class="navbar">
+  <!-- Ambient Floating Background -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <header class="navbar" id="topNavbar">
     <div class="container nav-inner">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true">
@@ -566,98 +812,100 @@
       <div class="hero">
         <div class="container hero-grid">
           <div>
-            <span class="eyebrow">✦ PLATFORM PENGENALAN POTENSI & EKSPLORASI JURUSAN</span>
-            <h1>Pilih jurusan kuliah dengan <span class="grad">pertimbangan matang.</span></h1>
-            <p class="hero-copy">Bukan sekadar tes minat bakat. CareerPath membantu siswa SMA, SMK, MA sederajat, hingga lulusan baru memahami potensi diri, mengeksplorasi pilihan pendidikan, dan membandingkan jurusan sebelum mengambil keputusan.</p>
-            <div class="hero-actions">
+            <span class="eyebrow hero-animate hero-d1"><span class="pulse-dot"></span> PLATFORM PENGENALAN POTENSI & EKSPLORASI JURUSAN</span>
+            <h1 class="hero-animate hero-d2">Pilih jurusan kuliah dengan <span class="grad">pertimbangan matang.</span></h1>
+            <p class="hero-copy hero-animate hero-d3">Bukan sekadar tes minat bakat. CareerPath membantu siswa SMA, SMK, MA sederajat, hingga lulusan baru memahami potensi diri, mengeksplorasi pilihan pendidikan, dan membandingkan jurusan sebelum mengambil keputusan.</p>
+            <div class="hero-actions hero-animate hero-d4">
               <button class="btn btn-primary btn-lg" id="heroStart">Mulai Kenali Dirimu →</button>
               <button class="btn btn-outline btn-lg" id="heroCompareBtn">Bandingkan Jurusan</button>
             </div>
-            <div class="hero-stats">
+            <div class="hero-stats hero-animate hero-d5">
               <div class="stat-mini"><strong>SMA/SMK/MA</strong><span>& Lulusan baru</span></div>
               <div class="stat-mini"><strong>Online</strong><span>HP & Komputer</span></div>
               <div class="stat-mini"><strong>5–7 mnt</strong><span>Laporan instan</span></div>
             </div>
           </div>
 
-          <!-- Preview Card -->
-          <div class="preview-shell" aria-label="Pratinjau dasbor CareerPath">
-            <div class="preview-topbar">
-              <div class="preview-user">
-                <div class="avatar-sm">DN</div>
-                <div><strong>Contoh Profil · Dinda</strong><small>SMA · Kelas 12 · Persiapan Kuliah</small></div>
+          <!-- 3D Interactive Preview Card -->
+          <div class="preview-stage hero-animate hero-d3">
+            <div class="preview-shell" id="heroPreviewCard" aria-label="Pratinjau dasbor CareerPath">
+              <div class="preview-topbar">
+                <div class="preview-user">
+                  <div class="avatar-sm">DN</div>
+                  <div><strong>Contoh Profil · Dinda</strong><small>SMA · Kelas 12 · Persiapan Kuliah</small></div>
+                </div>
+                <span class="code-badge">KODE: I · A · S</span>
               </div>
-              <span class="code-badge">KODE: I · A · S</span>
-            </div>
 
-            <div class="preview-bento">
-              <div class="p-card">
-                <div class="p-card-label">Kecocokan Utama <span>Top Fit</span></div>
-                <div class="gauge-mini">
-                  <svg width="150" height="86" viewBox="0 0 180 104" aria-hidden="true">
-                    <defs>
-                      <linearGradient id="prevGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#06b6d4"/>
-                      </linearGradient>
-                    </defs>
-                    <path d="M 20 90 A 70 70 0 0 1 160 90" fill="none" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round"/>
-                    <path d="M 20 90 A 70 70 0 0 1 148 54" fill="none" stroke="url(#prevGrad)" stroke-width="14" stroke-linecap="round"/>
-                  </svg>
-                  <div class="gauge-val tabular">92%</div>
-                  <div class="gauge-sub">Arah Minat Tinggi</div>
+              <div class="preview-bento">
+                <div class="p-card">
+                  <div class="p-card-label">Kecocokan Utama <span>Top Fit</span></div>
+                  <div class="gauge-mini">
+                    <svg width="150" height="86" viewBox="0 0 180 104" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="prevGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#06b6d4"/>
+                        </linearGradient>
+                      </defs>
+                      <path d="M 20 90 A 70 70 0 0 1 160 90" fill="none" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round"/>
+                      <path class="preview-gauge-path" d="M 20 90 A 70 70 0 0 1 160 90" fill="none" stroke="url(#prevGrad)" stroke-width="14" stroke-linecap="round"/>
+                    </svg>
+                    <div class="gauge-val tabular" id="heroPreviewNum">92%</div>
+                    <div class="gauge-sub">Arah Minat Tinggi</div>
+                  </div>
+                </div>
+
+                <div class="p-card">
+                  <div class="p-card-label">3 Potensi Terkuat <span>Skor</span></div>
+                  <div class="mini-bars">
+                    <div>
+                      <div class="m-bar-head"><span>🔬 Investigative</span><span class="tabular">11/12</span></div>
+                      <div class="m-bar-track"><div class="m-bar-fill" style="width:92%;background:#4f46e5"></div></div>
+                    </div>
+                    <div>
+                      <div class="m-bar-head"><span>🎨 Artistic</span><span class="tabular">10/12</span></div>
+                      <div class="m-bar-track"><div class="m-bar-fill" style="width:83%;background:#9333ea;animation-delay:.58s"></div></div>
+                    </div>
+                    <div>
+                      <div class="m-bar-head"><span>🤝 Social</span><span class="tabular">9/12</span></div>
+                      <div class="m-bar-track"><div class="m-bar-fill" style="width:75%;background:#10b981;animation-delay:.7s"></div></div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="p-card">
-                <div class="p-card-label">3 Potensi Terkuat <span>Skor</span></div>
-                <div class="mini-bars">
-                  <div>
-                    <div class="m-bar-head"><span>🔬 Investigative</span><span class="tabular">11/12</span></div>
-                    <div class="m-bar-track"><div class="m-bar-fill" style="width:92%;background:#4f46e5"></div></div>
-                  </div>
-                  <div>
-                    <div class="m-bar-head"><span>🎨 Artistic</span><span class="tabular">10/12</span></div>
-                    <div class="m-bar-track"><div class="m-bar-fill" style="width:83%;background:#9333ea"></div></div>
-                  </div>
-                  <div>
-                    <div class="m-bar-head"><span>🤝 Social</span><span class="tabular">9/12</span></div>
-                    <div class="m-bar-track"><div class="m-bar-fill" style="width:75%;background:#10b981"></div></div>
-                  </div>
+              <div class="preview-matches">
+                <div>
+                  <strong>Siap Bandingkan: Informatika vs DKV</strong>
+                  <small>Dilengkapi kelebihan, tantangan, & bekal diskusi BK/Orang Tua</small>
                 </div>
+                <span class="fit-chip">92% Match</span>
               </div>
-            </div>
-
-            <div class="preview-matches">
-              <div>
-                <strong>Siap Bandingkan: Informatika vs DKV</strong>
-                <small>Dilengkapi kelebihan, tantangan, & bekal diskusi BK/Orang Tua</small>
-              </div>
-              <span class="fit-chip">92% Match</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- PART 1: MASALAH & DATA PENDUKUNG (WHAT & WHY) -->
+      <!-- PART 1: MASALAH & DATA PENDUKUNG -->
       <section class="section section-soft" id="whySection">
         <div class="container">
-          <div class="section-heading">
+          <div class="section-heading reveal">
             <span class="eyebrow">LATAR BELAKANG & DATA FAKTA</span>
             <h2>Mengapa mengenal potensi diri penting sebelum memilih jurusan?</h2>
             <p>Pemilihan jurusan memengaruhi proses belajar, biaya pendidikan, dan arah karier. Banyak siswa masih memilih tanpa pemetaan diri yang cukup.</p>
           </div>
 
           <div class="data-grid">
-            <article class="kpi-card">
-              <div class="kpi-badge-num amber tabular">32,6%</div>
+            <article class="kpi-card hover-lift reveal" style="transition-delay:60ms">
+              <div class="kpi-badge-num amber tabular count-up" data-target="32.6" data-suffix="%">32,6%</div>
               <div>
                 <h3>Siswa SMK kurang yakin dengan kemampuan dirinya</h3>
                 <p>Hampir sepertiga siswa masih ragu menilai kekuatan dan kesiapan dirinya sendiri saat harus menentukan langkah setelah lulus sekolah.</p>
                 <span class="kpi-source">📊 Penelitian Siswa SMK (2026)</span>
               </div>
             </article>
-            <article class="kpi-card">
-              <div class="kpi-badge-num rose tabular">42,1%</div>
+            <article class="kpi-card hover-lift reveal" style="transition-delay:140ms">
+              <div class="kpi-badge-num rose tabular count-up" data-target="42.1" data-suffix="%">42,1%</div>
               <div>
                 <h3>Merasa fakultas sebelumnya bukan pilihan terbaik</h3>
                 <p>Dari alumni UI yang tidak ingin memilih fakultas yang sama, 42,1% menyebut fakultas sebelumnya tidak sesuai dengan bidang yang diminati.</p>
@@ -667,7 +915,7 @@
           </div>
 
           <div class="compare-problem-grid">
-            <article class="insight-box">
+            <article class="insight-box hover-lift reveal" style="transition-delay:100ms">
               <div class="insight-head">
                 <h3>Risiko Memilih Tanpa Pemetaan Diri</h3>
                 <span class="pill-tag warn">Perlu Dihindari</span>
@@ -680,7 +928,7 @@
               </ul>
             </article>
 
-            <article class="insight-box">
+            <article class="insight-box hover-lift reveal" style="transition-delay:180ms">
               <div class="insight-head">
                 <h3>Manfaat Mengenali Potensi Lebih Awal</h3>
                 <span class="pill-tag good">Tujuan Platform</span>
@@ -696,35 +944,35 @@
         </div>
       </section>
 
-      <!-- PART 2: SIAPA, KAPAN & DI MANA (WHO, WHEN, WHERE) -->
+      <!-- PART 2: SIAPA, KAPAN & DI MANA -->
       <section class="section" id="whoSection">
         <div class="container">
-          <div class="section-heading">
+          <div class="section-heading reveal">
             <span class="eyebrow">UNTUK SIAPA & KAPAN DIBUTUHKAN</span>
             <h2>Mendampingi masa transisi dari sekolah ke perguruan tinggi</h2>
             <p>Dapat diakses secara online melalui smartphone maupun komputer dari berbagai daerah, sejak awal masa sekolah menengah hingga pasca kelulusan.</p>
           </div>
 
           <div class="audience-grid">
-            <article class="audience-card">
+            <article class="audience-card hover-lift reveal" style="transition-delay:40ms">
               <div class="audience-icon">🧭</div>
               <span class="phase">Kelas X – XI</span>
               <h3>Eksplorasi Awal</h3>
               <p>Waktu ideal mulai mengenali minat, bakat, dan kepribadian sebelum memasuki tahap akhir SMA/SMK/MA.</p>
             </article>
-            <article class="audience-card">
+            <article class="audience-card hover-lift reveal" style="transition-delay:110ms">
               <div class="audience-icon">🎯</div>
               <span class="phase">Kelas XII</span>
               <h3>Persiapan Kuliah</h3>
               <p>Membantu menyaring dan membandingkan pilihan jurusan serta universitas menjelang seleksi masuk.</p>
             </article>
-            <article class="audience-card">
+            <article class="audience-card hover-lift reveal" style="transition-delay:180ms">
               <div class="audience-icon">🔄</div>
               <span class="phase">Lulusan / Evaluasi Ulang</span>
               <h3>Pertimbangan Ulang</h3>
               <p>Untuk lulusan yang masih bingung, belum lolos pilihan pertama, ambil jeda (gap year), atau merasa kurang cocok.</p>
             </article>
-            <article class="audience-card">
+            <article class="audience-card hover-lift reveal" style="transition-delay:250ms">
               <div class="audience-icon">🤝</div>
               <span class="phase">Pihak Pendukung</span>
               <h3>Orang Tua & Guru BK</h3>
@@ -732,7 +980,7 @@
             </article>
           </div>
 
-          <div class="moments-bar">
+          <div class="moments-bar reveal" style="transition-delay:160ms">
             <div class="moments-title">
               <strong>Kapan waktu paling tepat menggunakan CareerPath?</strong>
               <span>Akses kapan saja saat menghadapi momen transisi pendidikan berikut:</span>
@@ -747,26 +995,26 @@
         </div>
       </section>
 
-      <!-- PART 3: ALUR BERTAHAP (HOW) -->
+      <!-- PART 3: ALUR BERTAHAP -->
       <section class="section section-soft">
         <div class="container">
-          <div class="section-heading">
+          <div class="section-heading reveal">
             <span class="eyebrow">PROSES BERTAHAP</span>
             <h2>Tiga langkah membangun keputusan pendidikan yang matang</h2>
             <p>Dirancang agar siswa tidak hanya mendapat skor tes, tetapi mampu membandingkan pilihan studi secara terstruktur.</p>
           </div>
           <div class="bento-steps">
-            <article class="step-card">
+            <article class="step-card hover-lift reveal" style="transition-delay:60ms">
               <div class="step-top"><div class="step-icon">📝</div><span class="step-num">LANGKAH 01</span></div>
               <h3>Kenali Profil & Minat</h3>
               <p>Isi jenjang serta tujuanmu, lalu jawab 18 pernyataan singkat berbasis model psikologi karier RIASEC.</p>
             </article>
-            <article class="step-card">
+            <article class="step-card hover-lift reveal" style="transition-delay:140ms">
               <div class="step-top"><div class="step-icon">📊</div><span class="step-num">LANGKAH 02</span></div>
               <h3>Pahami Kelebihan & Tantangan</h3>
               <p>Lihat grafik radar 6 dimensi, persentase kecocokan, kekuatan utama, dan aspek yang perlu dikembangkan.</p>
             </article>
-            <article class="step-card">
+            <article class="step-card hover-lift reveal" style="transition-delay:220ms">
               <div class="step-top"><div class="step-icon">⚖️</div><span class="step-num">LANGKAH 03</span></div>
               <h3>Bandingkan & Diskusikan</h3>
               <p>Bandingkan beberapa jurusan secara berdampingan, lalu simpan laporan PDF untuk diskusi dengan guru BK atau orang tua.</p>
@@ -778,7 +1026,7 @@
       <!-- PART 4: 6 TIPE MINAT -->
       <section class="section" id="riasecSection">
         <div class="container">
-          <div class="section-heading">
+          <div class="section-heading reveal">
             <span class="eyebrow">6 DIMENSI KEPRIBADIAN & MINAT</span>
             <h2>Enam tipe minat RIASEC</h2>
             <p>Setiap siswa memiliki kombinasi unik. Klik salah satu kartu untuk memahami kekuatan sekaligus area yang perlu dilatih.</p>
@@ -787,16 +1035,16 @@
         </div>
       </section>
 
-      <!-- PART 5: EKSPLORASI & BANDINGKAN JURUSAN (SOLUSI KETERBATASAN INFO) -->
+      <!-- PART 5: EKSPLORASI & BANDINGKAN JURUSAN -->
       <section class="section section-soft" id="compareSection">
         <div class="container">
-          <div class="section-heading">
+          <div class="section-heading reveal">
             <span class="eyebrow">EKSPLORASI INFORMASI PRODI</span>
             <h2>Bandingkan pilihan jurusan sebelum memutuskan</h2>
             <p>Mengatasi keterbatasan informasi program studi. Pilih dua jurusan di bawah untuk melihat perbedaan fokus belajar dan persiapannya.</p>
           </div>
 
-          <div class="explorer-box">
+          <div class="explorer-box reveal">
             <div class="compare-select-grid">
               <div class="select-card">
                 <label for="landingCompareA">Pilihan Jurusan Pertama</label>
@@ -887,7 +1135,7 @@
             <div class="progress-track"><div class="progress-fill" id="quizProgress"></div></div>
           </div>
 
-          <div class="question-card">
+          <div class="question-card" id="questionCard">
             <span class="question-tag" id="questionCategory">
               <span class="tag-dot" id="questionDot"></span>
               <span id="questionTagText">REALISTIC · R</span>
@@ -956,10 +1204,8 @@
           </section>
         </div>
 
-        <!-- Top 2 Archetypes with Strengths & Growth Areas -->
         <div class="top-types-grid" id="topTypes"></div>
 
-        <!-- Recommendations -->
         <section class="recommend-panel">
           <div class="recommend-header">
             <div>
@@ -980,7 +1226,6 @@
           <div class="recommend-grid" id="recommendations" aria-live="polite"></div>
         </section>
 
-        <!-- Side-by-Side Comparison inside Result Dashboard -->
         <section class="result-compare-box" id="resultCompareBox">
           <div class="card-head" style="margin-bottom:10px">
             <div>
@@ -992,7 +1237,6 @@
           <div class="compare-table-wrap" id="resultCompareTable"></div>
         </section>
 
-        <!-- Decision Checklist & Counseling Guide -->
         <section class="guidance-panel">
           <div class="card-head" style="margin-bottom:6px">
             <h3 class="card-title" style="font-size:1.05rem">🤝 Bekal Pertimbangan Matang & Diskusi BK / Orang Tua</h3>
@@ -1064,7 +1308,6 @@
       { c: "C", q: "Saya merasa nyaman bekerja dengan aturan dan langkah kerja yang jelas." }
     ];
 
-    // Tiap item punya: [Nama Prodi, Deskripsi, Tags Fokus Kuliah, Jenjang/Jalur, Karakter/Persiapan]
     const STUDY = {
       R: [
         ["Teknik Mesin", "Cocok untuk minat pada mesin, perakitan, dan pemecahan masalah teknis.", ["Mekanika", "Gambar Teknik", "Material", "Manufaktur"], "S1 / D4", "Kuat di fisika terapan, suka praktik bengkel & perancangan mekanis."],
@@ -1151,16 +1394,9 @@
       { v: 4, label: "Sangat Setuju" }
     ];
 
-    // Flatten study list for Explorer & Comparison
     const ALL_STUDIES = ORDER.flatMap(code =>
       STUDY[code].map((item, idx) => ({
-        uid: `${code}-${idx}`,
-        code,
-        name: item[0],
-        desc: item[1],
-        courses: item[2],
-        degree: item[3],
-        prep: item[4]
+        uid: `${code}-${idx}`, code, name: item[0], desc: item[1], courses: item[2], degree: item[3], prep: item[4]
       }))
     );
 
@@ -1176,6 +1412,69 @@
 
     const $ = id => document.getElementById(id);
 
+    // Helper: Smooth Number Count-up Animation
+    function animateCount(el, start, end, duration, decimals = 0, suffix = "") {
+      const startTime = performance.now();
+      const format = val => {
+        const fixed = decimals > 0 ? val.toFixed(decimals).replace(".", ",") : Math.round(val);
+        return `${fixed}${suffix}`;
+      };
+      function tick(now) {
+        const elapsed = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - elapsed, 3); // easeOutCubic
+        el.textContent = format(start + (end - start) * eased);
+        if (elapsed < 1) requestAnimationFrame(tick);
+        else el.textContent = format(end);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // Navbar scroll elevation
+    window.addEventListener("scroll", () => {
+      $("topNavbar").classList.toggle("scrolled", window.scrollY > 12);
+    }, { passive: true });
+
+    // 3D Tilt on Hero Preview Card (desktop pointer only)
+    const previewCard = $("heroPreviewCard");
+    if (previewCard && window.matchMedia("(pointer: fine)").matches) {
+      previewCard.addEventListener("mousemove", e => {
+        const rect = previewCard.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        previewCard.style.transform = `rotateX(${(-y * 7).toFixed(2)}deg) rotateY(${(x * 8).toFixed(2)}deg)`;
+      });
+      previewCard.addEventListener("mouseleave", () => {
+        previewCard.style.transform = "";
+      });
+    }
+
+    // Hero preview count-up on load
+    animateCount($("heroPreviewNum"), 0, 92, 1100, 0, "%");
+
+    // Scroll Reveal Observer for Landing Page
+    function setupRevealObserver() {
+      const targets = document.querySelectorAll(".reveal");
+      if (!("IntersectionObserver" in window)) {
+        targets.forEach(el => el.classList.add("is-visible"));
+        return;
+      }
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          el.classList.add("is-visible");
+          const counter = el.querySelector(".count-up");
+          if (counter && !counter.dataset.animated) {
+            counter.dataset.animated = "1";
+            const targetVal = parseFloat(counter.dataset.target);
+            animateCount(counter, 0, targetVal, 1100, 1, counter.dataset.suffix || "");
+          }
+          obs.unobserve(el);
+        });
+      }, { threshold: 0.14 });
+      targets.forEach(el => obs.observe(el));
+    }
+
     function showView(id) {
       ["landingView", "preTestView", "quizView", "resultView"].forEach(v => $(v).classList.toggle("hidden", v !== id));
       $("landingNav").classList.toggle("hidden", id !== "landingView");
@@ -1183,7 +1482,6 @@
       $("navStart").textContent = id === "landingView" ? "Mulai Tes →" : "← Ke Beranda";
     }
 
-    // Smooth scroll nav links
     document.querySelectorAll(".nav-link").forEach(btn => {
       btn.addEventListener("click", () => {
         const target = $(btn.dataset.scroll);
@@ -1191,7 +1489,6 @@
       });
     });
 
-    // Modal for RIASEC Type Info
     function openTypeModal(code) {
       const t = TYPES[code];
       $("modalIcon").textContent = t.icon;
@@ -1208,10 +1505,10 @@
     function closeTypeModal() { $("typeModal").classList.add("hidden"); }
 
     function renderTypeCards() {
-      $("typeCards").innerHTML = ORDER.map(code => {
+      $("typeCards").innerHTML = ORDER.map((code, idx) => {
         const t = TYPES[code];
         return `
-          <article class="type-card" tabindex="0" role="button" aria-label="Pelajari tipe ${t.name}" data-type="${code}">
+          <article class="type-card hover-lift reveal" style="transition-delay:${idx * 65}ms" tabindex="0" role="button" aria-label="Pelajari tipe ${t.name}" data-type="${code}">
             <div>
               <div class="type-id-wrap">
                 <div class="type-icon" style="background:${t.bg}">${t.icon}</div>
@@ -1234,7 +1531,6 @@
       });
     }
 
-    // Comparison Table Builder (shared by Landing Explorer & Result Dashboard)
     function buildCompareTableHTML(items) {
       if (!items.length) {
         return `<p style="margin:8px 0 0;font-size:.86rem;color:var(--muted)">Belum ada jurusan yang dipilih. Klik tombol <strong>+ Bandingkan</strong> pada kartu jurusan di atas.</p>`;
@@ -1258,8 +1554,8 @@
       const opts = ALL_STUDIES.map(s => `<option value="${s.uid}">${s.name} (${TYPES[s.code].name})</option>`).join("");
       $("landingCompareA").innerHTML = opts;
       $("landingCompareB").innerHTML = opts;
-      $("landingCompareA").value = "I-0"; // Informatika
-      $("landingCompareB").value = "A-0"; // DKV
+      $("landingCompareA").value = "I-0";
+      $("landingCompareB").value = "A-0";
 
       const update = () => {
         const a = ALL_STUDIES.find(s => s.uid === $("landingCompareA").value);
@@ -1271,7 +1567,6 @@
       update();
     }
 
-    // Pre-test Pill Selectors
     function syncProfilePills() {
       const bindGroup = (id, key) => {
         $(id).querySelectorAll(".choice-chip").forEach(btn => {
@@ -1313,8 +1608,15 @@
       syncProfilePills();
     });
 
-    // Quiz Rendering
-    function renderQuestion() {
+    // Quiz Rendering with Directional Slide Animation
+    function renderQuestion(direction = null) {
+      const card = $("questionCard");
+      if (direction) {
+        card.classList.remove("question-slide-next", "question-slide-prev");
+        void card.offsetWidth;
+        card.classList.add(direction === "next" ? "question-slide-next" : "question-slide-prev");
+      }
+
       const q = QUESTIONS[state.index];
       const t = TYPES[q.c];
       const n = state.index + 1;
@@ -1327,6 +1629,10 @@
       $("questionTagText").textContent = `${t.name.toUpperCase()} · ${q.c}`;
       $("questionText").textContent = q.q;
 
+      renderOptionsOnly();
+    }
+
+    function renderOptionsOnly() {
       $("answerOptions").innerHTML = SCALE.map((s, idx) => {
         const selected = state.answers[state.index] === s.v;
         return `
@@ -1340,7 +1646,7 @@
       $("answerOptions").querySelectorAll(".option").forEach(btn => {
         btn.addEventListener("click", () => {
           state.answers[state.index] = Number(btn.dataset.value);
-          renderQuestion();
+          renderOptionsOnly();
         });
       });
 
@@ -1364,6 +1670,7 @@
         .sort((a, b) => b.raw - a.raw || ORDER.indexOf(a.code) - ORDER.indexOf(b.code));
     }
 
+    // Animated Gauge
     function renderGauge(percent, spread) {
       const radius = 78;
       const circumference = Math.PI * radius;
@@ -1377,14 +1684,20 @@
             </linearGradient>
           </defs>
           <path d="M 27 104 A ${radius} ${radius} 0 0 1 183 104" fill="none" stroke="#eef2f6" stroke-width="16" stroke-linecap="round"/>
-          <path d="M 27 104 A ${radius} ${radius} 0 0 1 183 104" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"
-            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/>
+          <path id="gaugeArcPath" class="gauge-arc-fill" d="M 27 104 A ${radius} ${radius} 0 0 1 183 104" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}"/>
         </svg>
         <div class="gauge-center-text">
-          <div class="gauge-number tabular">${percent}%</div>
+          <div class="gauge-number tabular" id="gaugeNumVal">0%</div>
           <div class="gauge-caption">Skor Tertinggi</div>
         </div>
       `;
+
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const arc = $("gaugeArcPath");
+        if (arc) arc.style.strokeDashoffset = String(offset);
+      }));
+      animateCount($("gaugeNumVal"), 0, percent, 1000, 0, "%");
 
       let clarityText = "● Minat Eksploratif (Multipotensi)";
       if (spread >= 4) clarityText = "● Fokus Minat Sangat Kuat";
@@ -1392,6 +1705,7 @@
       $("clarityLabel").textContent = clarityText;
     }
 
+    // Animated Radar Chart
     function renderRadarChart() {
       const cx = 150, cy = 142, maxR = 92;
       const angles = ORDER.map((_, i) => (i * 60 - 90) * (Math.PI / 180));
@@ -1434,8 +1748,11 @@
             </linearGradient>
           </defs>
           ${gridPolygons}${axes}
-          <polygon points="${dataPoly}" fill="url(#radarFill)" stroke="#4f46e5" stroke-width="2.2" stroke-linejoin="round" />
-          ${vertices}${labels}
+          <g class="radar-data-group">
+            <polygon points="${dataPoly}" fill="url(#radarFill)" stroke="#4f46e5" stroke-width="2.2" stroke-linejoin="round" />
+            ${vertices}
+          </g>
+          ${labels}
         </svg>
       `;
     }
@@ -1470,10 +1787,13 @@
       $("contextGuidanceText").textContent = `Karena tujuanmu saat ini adalah "${state.profile.goal}", gunakan hasil dua minat tertinggimu (${TYPES[first.code].name} & ${TYPES[second.code].name}) sebagai pegangan utama untuk membandingkan jurusan—bukan sekadar mengikuti tren atau pilihan teman. Lakukan langkah berikut sebelum mengunci pilihan:`;
 
       $("hollandCode").textContent = holland;
+
+      showView("resultView");
       renderGauge(first.percent, spread);
       renderRadarChart();
 
-      $("scoreChart").innerHTML = ranking.map(item => {
+      // Animated Score Bars
+      $("scoreChart").innerHTML = ranking.map((item, idx) => {
         const t = TYPES[item.code];
         return `
           <div class="score-row">
@@ -1481,15 +1801,21 @@
               <span class="score-name">${t.icon} ${t.name}</span>
               <span class="score-val tabular">${item.raw}/12 · ${item.percent}%</span>
             </div>
-            <div class="score-track"><div class="score-fill" style="width:${item.percent}%;background:${t.color}"></div></div>
+            <div class="score-track"><div class="score-fill" data-target="${item.percent}%" style="width:0%;background:${t.color};transition-delay:${idx * 70}ms"></div></div>
           </div>
         `;
       }).join("");
 
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        $("scoreChart").querySelectorAll(".score-fill").forEach(bar => {
+          bar.style.width = bar.dataset.target;
+        });
+      }));
+
       $("topTypes").innerHTML = [first, second].map((item, i) => {
         const t = TYPES[item.code];
         return `
-          <article class="archetype-card">
+          <article class="archetype-card hover-lift">
             <div class="archetype-accent" style="background:${t.color}"></div>
             <div class="archetype-head">
               <div class="archetype-title">
@@ -1507,24 +1833,22 @@
         `;
       }).join("");
 
-      // Pre-select top 2 recommended majors for instant comparison!
       state.compareIds = [`${first.code}-0`, `${second.code}-0`];
       state.activeTab = "study";
       state.activeFilter = "ALL";
       setTab("study");
       renderResultComparison();
-      showView("resultView");
     }
 
     function renderRecFilters(top3) {
       const chips = [{ code: "ALL", label: "Semua (Top 3)" }, ...top3.map((r, idx) => ({ code: r.code, label: `#${idx + 1} ${TYPES[r.code].name}` }))];
       $("recFilters").innerHTML = chips.map(c => `<button type="button" class="filter-chip ${state.activeFilter === c.code ? "active" : ""}" data-filter="${c.code}">${c.label}</button>`).join("");
       $("recFilters").querySelectorAll(".filter-chip").forEach(btn => {
-        btn.addEventListener("click", () => { state.activeFilter = btn.dataset.filter; renderRecommendations(state.activeTab); });
+        btn.addEventListener("click", () => { state.activeFilter = btn.dataset.filter; renderRecommendations(state.activeTab, true); });
       });
     }
 
-    function renderRecommendations(tab) {
+    function renderRecommendations(tab, animateCards = true) {
       const top3 = rankedTypes().slice(0, 3);
       renderRecFilters(top3);
 
@@ -1555,12 +1879,12 @@
         ? `Disusun dari tiga dimensi RIASEC tertinggimu (${summary}). Klik "+ Bandingkan" untuk menimbang prodi pilihan.`
         : `Gambaran profesi awal sesuai profil (${summary}) sebagai pertimbangan prospek jangka panjang.`;
 
-      $("recommendations").innerHTML = cards.map(({ uid, code, percent, rank, item }) => {
+      $("recommendations").innerHTML = cards.map(({ uid, code, percent, rank, item }, i) => {
         const t = TYPES[code];
         const tagTitle = isStudy ? "Fokus:" : "Skill:";
         const isCompared = isStudy && state.compareIds.includes(uid);
         return `
-          <article class="recommend-card ${isCompared ? "compared" : ""}">
+          <article class="recommend-card ${animateCards ? "animate-in" : ""} ${isCompared ? "compared" : ""}" style="${animateCards ? `animation-delay:${i * 55}ms` : ""}">
             <div>
               <div class="rec-top">
                 <span class="mini-label" style="background:${t.bg};color:${t.color}">Prioritas #${rank + 1} · ${t.name}</span>
@@ -1590,7 +1914,7 @@
               if (state.compareIds.length >= 3) state.compareIds.shift();
               state.compareIds.push(uid);
             }
-            renderRecommendations("study");
+            renderRecommendations("study", false);
             renderResultComparison();
           });
         });
@@ -1604,7 +1928,7 @@
       $("jobTab").classList.toggle("active", !study);
       $("studyTab").setAttribute("aria-selected", String(study));
       $("jobTab").setAttribute("aria-selected", String(!study));
-      renderRecommendations(tab);
+      renderRecommendations(tab, true);
     }
 
     // Event Bindings
@@ -1637,29 +1961,39 @@
       renderQuestion();
     });
 
-    $("prevQuestion").addEventListener("click", () => { if (state.index > 0) { state.index--; renderQuestion(); } });
+    $("prevQuestion").addEventListener("click", () => {
+      if (state.index > 0) {
+        state.index--;
+        renderQuestion("prev");
+      }
+    });
     function goNextQuestion() {
       if (state.answers[state.index] === null) return;
-      if (state.index < QUESTIONS.length - 1) { state.index++; renderQuestion(); }
-      else renderResults();
+      if (state.index < QUESTIONS.length - 1) {
+        state.index++;
+        renderQuestion("next");
+      } else {
+        renderResults();
+      }
     }
     $("nextQuestion").addEventListener("click", goNextQuestion);
     $("studyTab").addEventListener("click", () => setTab("study"));
     $("jobTab").addEventListener("click", () => setTab("job"));
-    $("clearCompareBtn").addEventListener("click", () => { state.compareIds = []; renderRecommendations("study"); renderResultComparison(); });
+    $("clearCompareBtn").addEventListener("click", () => { state.compareIds = []; renderRecommendations("study", false); renderResultComparison(); });
     $("retryTest").addEventListener("click", () => { state.index = 0; state.answers = Array(QUESTIONS.length).fill(null); state.scores = null; showView("preTestView"); });
     $("printResult").addEventListener("click", () => window.print());
 
     document.addEventListener("keydown", e => {
       if (e.key === "Escape" && !$("typeModal").classList.contains("hidden")) { closeTypeModal(); return; }
       if ($("quizView").classList.contains("hidden")) return;
-      if (["1", "2", "3", "4"].includes(e.key)) { state.answers[state.index] = Number(e.key); renderQuestion(); }
+      if (["1", "2", "3", "4"].includes(e.key)) { state.answers[state.index] = Number(e.key); renderOptionsOnly(); }
       else if (e.key === "ArrowRight" && state.answers[state.index] !== null) goNextQuestion();
-      else if (e.key === "ArrowLeft" && state.index > 0) { state.index--; renderQuestion(); }
+      else if (e.key === "ArrowLeft" && state.index > 0) { state.index--; renderQuestion("prev"); }
     });
 
     renderTypeCards();
     initLandingCompare();
+    setupRevealObserver();
     showView("landingView");
   </script>
 </body>
